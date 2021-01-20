@@ -1,0 +1,45 @@
+.tf {
+  margin: 20px 40px;
+  font-size: 16px;
+}
+
+.tf .mtitle {
+  font-size: 50px;
+}
+.tf .ltitle {
+  font-size: 20px;
+  font-weight: 500;
+}
+.tf .ftitle {
+  margin-top: 20px;
+  font-size: 30px;
+}
+
+.tf .bt button {
+  margin-right: 10px;
+  width: 200px;
+}
+
+
+.tf .draw {
+  height: 300px;
+  margin-top: 20px;
+}
+.tf .pred {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.tf .pred .pred-container {
+  width: 100px;
+  margin-right: 5px;
+}
+.tf .pred .prediction-canvas {
+  width: 100px;
+}
+.tf .pred .pred-correct {
+  background-color: green;
+}
+.tf .pred .pred-incorrect {
+  background-color: red;
+}
