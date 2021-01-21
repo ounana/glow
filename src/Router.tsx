@@ -8,6 +8,7 @@ import {
 
 const Tensorflow = lazy(() => import('./tensorflow/Tensorflow'))
 const Test = lazy(() => import('./test/Test'))
+const Reduxd = lazy(() => import('./reduxd'))
 
 function Router() {
   return (
@@ -17,7 +18,9 @@ function Router() {
           <Route exact path="/" component={Tensorflow} />
           <Route path="/tensorflow" component={Tensorflow} />
           <Route path="/test" component={Test} />
-          <Redirect from="*" to="/test"></Redirect>
+          <Route path="/reduxd" component={Reduxd} />
+          
+          <Redirect from="*" to="/tensorflow"></Redirect>
         </Switch>
       </Suspense>
     </BrowserRouter>

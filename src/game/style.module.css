@@ -1,0 +1,27 @@
+.game {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.balloon{
+  cursor: pointer;
+	position: absolute;
+	width: 160px;
+	height: 160px;
+	background: #faf9f9;
+	border-radius: 50% 50% 20% 50%;
+	transform: rotate(45deg);
+	box-shadow: -8px -8px 80px -8px #873940 inset;
+}
+.balloon:after{
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	content: "";
+	border: 10px solid transparent;
+	border-right-color: #873940;
+	transform: rotate(45deg);
+	border-radius: 50%;
+}

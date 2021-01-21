@@ -131,7 +131,7 @@ export default class Tensorflow extends PureComponent {
     //获取图片总张数
     // console.log('Img total is ' + this.images.length / 784)
     //渲染范围 0 ~ 100 总的范围 0 ~ (this.images.length / 784)
-    const range = [0, 50]
+    const range = [100, 200]
     const count = range[1] - range[0]
     //截取图片
     const images = this.images.slice(IMAGE_SIZE * range[0], range[1] * IMAGE_SIZE)

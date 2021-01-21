@@ -2,6 +2,8 @@
 
 package-lock.json
 build
+yarn.lock
+.eslintcache
 
 # dependencies
 /node_modules
