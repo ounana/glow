@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import style from './style.module.css'
 
 const WINDOW_WIDTH = window.innerWidth
@@ -48,7 +48,7 @@ class Balloon {
   destory() {
     try {
       this.root.removeChild(this.document)
-    } catch{ }
+    } catch { }
   }
   move() {
     this.timerUp = setInterval(() => {

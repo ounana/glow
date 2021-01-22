@@ -1,7 +1,8 @@
+import { PaperScope } from "paper";
 import { Service } from ".";
-import { MyPaperScope } from "../PaperRoot";
-import store from "../../store";
-import { addPath, removePath } from "../../store/paper/actions";
+
+// import store from "../../store";
+// import { addPath, removePath } from "../../store/paper/actions";
 
 export class Daub implements Service {
   static namespace = 'daub'
@@ -13,7 +14,7 @@ export class Daub implements Service {
     class: this.paper.Path,
     tolerance: 30
   }
-  constructor(public readonly paper: MyPaperScope) {
+  constructor(public readonly paper: PaperScope) {
     this.circle = new paper.Path.Circle({
       center: [80, 50],
       radius: 30,
@@ -28,9 +29,9 @@ export class Daub implements Service {
     //保存path
     if (this.oldPath && this.newPath) {
       //删除老的 
-      store.dispatch(removePath(this.oldPath.id))
+      // store.dispatch(removePath(this.oldPath.id))
       //保存新的
-      store.dispatch(addPath(this.newPath))
+      // store.dispatch(addPath(this.newPath))
       this.oldPath = this.newPath = null
     }
   }

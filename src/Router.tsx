@@ -9,8 +9,9 @@ import {
 const Tensorflow = lazy(() => import('./tensorflow/Tensorflow'))
 const Test = lazy(() => import('./test/Test'))
 const Reduxd = lazy(() => import('./reduxd'))
+const Paperd = lazy(() => import('./paperd'))
 
-function Router() {
+export default function Router() {
   return (
     <BrowserRouter>
       <Suspense fallback={'路由加载中'}>
@@ -19,6 +20,7 @@ function Router() {
           <Route path="/tensorflow" component={Tensorflow} />
           <Route path="/test" component={Test} />
           <Route path="/reduxd" component={Reduxd} />
+          <Route path="/paperd" component={Paperd} />
           
           <Redirect from="*" to="/tensorflow"></Redirect>
         </Switch>
@@ -26,5 +28,3 @@ function Router() {
     </BrowserRouter>
   )
 }
-
-export default Router

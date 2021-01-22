@@ -1,5 +1,5 @@
+import { PaperScope } from "paper";
 import { Service } from ".";
-import { MyPaperScope } from "../PaperRoot";
 
 export class Move implements Service {
   static namespace = 'move'
@@ -12,7 +12,7 @@ export class Move implements Service {
     fill: true,
     tolerance: 5
   }
-  constructor(public readonly paper: MyPaperScope) {
+  constructor(public readonly paper: PaperScope) {
     this.paper.view.on('mousemove', this.onMouseMove)
     this.paper.view.on('mousedrag', this.onMouseDrag)
     this.paper.view.on('mousedown', this.onMouseDown)

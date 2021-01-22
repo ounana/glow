@@ -1,45 +1,63 @@
-import React, { useState } from 'react';
-import { connect } from 'react-redux'
 import { Input, List, Radio } from 'antd'
-import { addTodo, toggleTodo, updateTodoFilter, Filter } from '../store/todo/actions'
-import { getterTodos } from '../store/todo/getterTodos'
+import { Dispatch } from 'redux'
+import { connect } from 'react-redux'
 import { State } from '../store';
+import { Action, ACTION } from '../store/actions';
+import React from 'react'
+import { RadioChangeEvent } from 'antd/lib/radio';
+import { TodoFilter } from '../store/todo';
 
-const mapstate = ({ todo }: State) => ({ todo })
-export default connect(mapstate)(Todo)
-
-function Todo(props: any) {
-  const [value, setValue] = useState('')
-  const { todo, dispatch } = props
-  const { todos, filter } = todo
+let todoId = 0
+interface TodoProps extends ReturnType<typeof mapstate> {
+  dispatch: Dispatch<Action>
+}
+function Todo(props: TodoProps) {
+  const { todo: { data, filter }, dispatch } = props
+  const onSearch = (v: string) => {
+    if (!v.trim()) return
+    const todo = { id: todoId++, text: v, completed: false }
+    dispatch({ type: ACTION.ADD_TODO, payload: todo })
+  }
+  const onTodoClick = (id: number) => {
+    dispatch({ type: ACTION.TOGGLE_TODO, payload: id })
+  }
+  const onRadioChange = (e: RadioChangeEvent) => {
+    const filter = e.target.value
+    dispatch({ type: ACTION.SWITCH_TODO_FILTER, payload: filter })
+  }
+  const filterTodo = (filter: TodoFilter) => {
+    switch (filter) {
+      case 'SHOW_COMPLETED':
+        return data.filter(td => td.completed)
+      case 'SHOW_ACTIVE':
+        return data.filter(td => !td.completed)
+      default:
+        return data
+    }
+  }
   return (
     <div>
       <Input.Search
-        placeholder="input todo text"
-        enterButton="Add ToDo"
+        placeholder="input todo"
+        enterButton="Add Todo"
         size="large"
-        onSearch={v => {
-          if (!v.trim()) return
-          dispatch(addTodo(v))
-          setValue('')
-        }}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onSearch={onSearch}
       />
       <List
         bordered
-        dataSource={getterTodos(todos, filter)}
-        renderItem={v =>
+        dataSource={filterTodo(filter)}
+        renderItem={(v) =>
           <List.Item
-            onClick={() => dispatch(toggleTodo(v.id))}
+            onClick={() => onTodoClick(v.id)}
             style={{ color: v.completed ? 'red' : 'green', cursor: 'pointer' }}
           >{v.text}</List.Item>
         }
       />
       <Radio.Group
         defaultValue={filter}
-        onChange={e => dispatch(updateTodoFilter(e.target.value as Filter))}
-        buttonStyle="solid">
+        onChange={onRadioChange}
+        buttonStyle="solid"
+      >
         <Radio.Button value="SHOW_ALL">SHOW_ALL</Radio.Button>
         <Radio.Button value="SHOW_COMPLETED">SHOW_COMPLETED</Radio.Button>
         <Radio.Button value="SHOW_ACTIVE">SHOW_ACTIVE</Radio.Button>
@@ -48,3 +66,8 @@ function Todo(props: any) {
   )
 }
 
+const mapstate = (state: State) => ({
+  todo: state.todo
+})
+
+export default connect(mapstate)(Todo)

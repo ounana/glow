@@ -1,22 +1,39 @@
-import { MyPaperScope } from "../PaperRoot";
 import { Daub } from "./Daub";
 import { Move } from "./Move";
 import { Draw } from "./Draw";
 import { Union } from "./Union";
+import { PaperScope } from "paper";
 
 export abstract class Service {
   static namespace: string
-  constructor(public readonly paper: MyPaperScope) { }
+  constructor(public readonly paper: PaperScope) { }
   abstract destroy(): void
 }
 
-export type ServiceType =
-  typeof Daub | typeof Move |
-  typeof Draw | typeof Union
+export type ServiceType = Daub | Move | Draw | Union
+export class ServiceCore {
+  Services = [Daub, Move, Draw, Union]
+  service: ServiceType | null = null
+  serviceName: string | null = null
+  constructor(public readonly paper: PaperScope) { }
 
-export const Services = new Map<string, ServiceType>()
-
-Services.set(Daub.namespace, Daub)
-Services.set(Move.namespace, Move)
-Services.set(Draw.namespace, Draw)
-Services.set(Union.namespace, Union)
+  getService(name: string) {
+    return this.Services.find(s => s.namespace === name)
+  }
+  registerService(name: string) {
+    //verification service is Repeat
+    if (name === this.serviceName) {
+      throw new Error('The service has not changed!')
+    }
+    //cancellation service
+    if (this.service) {
+      this.service.destroy()
+      this.service = null
+    }
+    //switch service
+    const service = this.getService(name)
+    if (!service) throw new Error('This service not is exist!')
+    this.service = new service(this.paper)
+    this.serviceName = service.namespace
+  }
+}

@@ -1,9 +1,11 @@
+import LoadData from "./LoadData"
 import Todo from "./Todo"
 
 function Reduxd() {
   return (
     <div>
-      <Todo />
+      <Todo/>
+      <LoadData/>
     </div>
   )
 }
