@@ -1,28 +1,29 @@
-import React, { useState, useContext } from 'react'
+import { useState, useContext, createContext } from 'react'
 import { Button } from 'antd'
-const ContextCount = React.createContext(0)
 
-/*
-	*传递props
-	不用每层都传递props
-*/
+const MyContext = createContext(0)
+
+/**
+ * Context
+ * 传递状态 不用每层都传递props
+ */
 
 export default function Context() {
 	const [count, setCount] = useState(0)
 	return (
 		<div>
-			<h1>Context-上下文</h1>
+			<h1>React Context</h1>
 			<Button onClick={() => setCount(count + 1)}>按钮</Button>
-			<ContextCount.Provider value={count}>
+			<MyContext.Provider value={count}>
 				<Greeting />
-			</ContextCount.Provider>
+			</MyContext.Provider>
 		</div>
 	)
 }
 
 function Greeting() {
-	const count = useContext(ContextCount)
+	const count = useContext(MyContext)
 	return (
-		<h2>Count, {count}</h2>
+		<h2>You clicked {count} times</h2>
 	)
 }

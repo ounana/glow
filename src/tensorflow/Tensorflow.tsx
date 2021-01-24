@@ -178,7 +178,7 @@ export default class Tensorflow extends PureComponent {
        * 那么我们就需要 28 x 28 x 4 个字节来存储这张图片
        * 也就是new ImageData(28, 28)自动创建的内存空间大小
        */
-      for (let i = 0; i < height * width; ++i) {
+      for (let i = 0; i < height * width; i++) {
         const j = i * 4
         imageData.data[j + 0] = image[i] * 255
         imageData.data[j + 1] = image[i] * 255

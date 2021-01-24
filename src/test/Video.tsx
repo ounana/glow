@@ -1,4 +1,3 @@
-
 export default function Video() {
   return (
     <video
@@ -10,8 +9,6 @@ export default function Video() {
         width: 500,
         height: 600
       }}
-    >
-      您的浏览器不支持 video 标签。
-    </video>
+    />
   )
 }

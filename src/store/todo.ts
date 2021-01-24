@@ -1,12 +1,12 @@
 import { Action, ACTION } from './actions'
 
-export type TodoData = {
+export interface TodoData {
   id: number
   text: string
   completed: boolean
 }
 export type TodoFilter = 'SHOW_ALL' | 'SHOW_COMPLETED' | 'SHOW_ACTIVE'
-export type Todo = {
+export interface Todo {
   data: TodoData[]
   filter: TodoFilter
 }

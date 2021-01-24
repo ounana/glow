@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { interval, Subject } from 'rxjs';
 import { map, concatMap, take } from 'rxjs/operators';
 
-export default () => {
+export default function Queue() {
   const source = useRef<HTMLButtonElement>(null)
   const content = useRef<HTMLDivElement>(null)
   const subject = useRef<Subject<number>>(new Subject())

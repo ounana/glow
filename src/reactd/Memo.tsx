@@ -1,25 +1,37 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { Button, Switch } from 'antd'
-/*
-	*Memo组件修改状态
-	*防止MyComponent重新渲染
-*/
 
-const MyComponent = React.memo(function MyComponent(props: any) {
-	console.log('I am rendering')
+/**
+ * React Memo
+ * react 的渲染机制是：上层组件的state\props 改变，
+ * 那么下层组件的UI会全部重新渲染，
+ * 
+ * 下层组件要想不被渲染。需要使用
+ * 函数组件使用React.memo包裹，或者类组件shouldComponentUpdate声明周期
+ */
+
+interface MySwitchProps {
+	open: boolean
+}
+
+function MySwitch(props: MySwitchProps) {
+	console.log('下层组件渲染了')
 	return (
 		<Switch checked={props.open} />
 	)
-}, function (prevProps, nextProps) {
-	//如果上一次的状态等于下一次的状态，就不更新
+}
+
+function areEqual(prevProps: MySwitchProps, nextProps: MySwitchProps) {
 	if (prevProps.open === nextProps.open) {
 		return true
 	} else {
 		return false
 	}
-})
+}
 
-export default function Memo(props: any) {
+const MySwitchMemo = memo(MySwitch, areEqual)
+
+export default function Memo() {
 	const [open, setOpen] = useState(true)
 	const [date, setDate] = useState(new Date())
 
@@ -30,12 +42,14 @@ export default function Memo(props: any) {
 		return () => {
 			clearInterval(timerID)
 		}
-	})
+	}, [])
+
 	return (
 		<div>
-			<Button onClick={() => setOpen(!open)}>OPEN</Button>
-			<MyComponent open={open} />
+			<h1>React Memo</h1>
+			<Button onClick={() => setOpen(!open)}>SWITCH</Button>
 			<h3>{date.toString()}</h3>
+			<MySwitchMemo open={open} />
 		</div>
 	)
 }

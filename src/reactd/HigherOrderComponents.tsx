@@ -1,31 +1,42 @@
-import React from 'react';
-
 /*
-	高阶组件
-
-	概念
-	高阶组件是一个获取组件并返回新组件的函数
-	就是高阶函数
-	参数是一个组件
-	返回一个新组件
-	
-	作用
-	高阶组件内可定制props
-
+	React HOC
+	以组件作为参数并返回新组件的函数
+	作用：注入一些props
 */
 
-const WrappedComponent = (props: any) => {
-	console.log(props)
-	return (
-		<h1>Higher-Order Components -高阶组件</h1>
-	)
-}
+import { Button } from "antd"
 
-const HigherOrderComponents = (Wraped: any) => {
-	return (props: any) => {
-		return <Wraped age="18" {...props} />
+const store = { count: 0 }
+type Store = typeof store
+
+function dispatch() {
+	store.count += 1
+	console.log(store)
+}
+type Dispatch = typeof dispatch
+
+function MyConnect<P>(Component: any) {
+	return (props: Omit<P, keyof Store | 'dispatch'>) => {
+		return <Component {...props} dispatch={dispatch} {...store} />
 	}
 }
 
+export default MyConnect<HigherOrderProps>(HigherOrder)
 
-export default HigherOrderComponents(WrappedComponent)
+interface HigherOrderProps extends Store {
+	dispatch: Dispatch,
+	name: string
+	age: number
+}
+
+function HigherOrder(props: HigherOrderProps) {
+	const { name, age, count, dispatch } = props
+	return (
+		<div>
+			<h1>React Higher-Order Components</h1>
+			<h3>Name: {name}, age: {age}</h3>
+			<h3>count: {count}</h3>
+			<Button onClick={dispatch}>DISPATCH</Button>
+		</div>
+	)
+}

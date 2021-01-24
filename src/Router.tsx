@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense } from 'react';
 import {
   BrowserRouter,
   Route,
@@ -10,6 +10,7 @@ const Tensorflow = lazy(() => import('./tensorflow/Tensorflow'))
 const Test = lazy(() => import('./test/Test'))
 const Reduxd = lazy(() => import('./reduxd'))
 const Paperd = lazy(() => import('./paperd'))
+const Rxjsd = lazy(() => import('./rxjsd'))
 
 export default function Router() {
   return (
@@ -21,7 +22,8 @@ export default function Router() {
           <Route path="/test" component={Test} />
           <Route path="/reduxd" component={Reduxd} />
           <Route path="/paperd" component={Paperd} />
-          
+          <Route path="/rxjsd" component={Rxjsd} />
+
           <Redirect from="*" to="/tensorflow"></Redirect>
         </Switch>
       </Suspense>

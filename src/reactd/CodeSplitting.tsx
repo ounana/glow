@@ -1,21 +1,19 @@
-import React, { Suspense } from 'react'
+import { Suspense, lazy } from 'react'
 
-/*
-	代码分割
-	lazy
-	Suspense
-*/
+/**
+ * Code Splitting
+ * 按需加载组件
+ */
 
-const OtherComponent = React.lazy(() => import('./OtherComponent'))
+const OtherComponent = lazy(() => import('./Hooks'))
 
-const CodeSplitting = () => {
+export default function CodeSplitting() {
 	return (
 		<div>
-			<h1>CodeSplitting-代码分割</h1>
+			<h1>React Code Splitting</h1>
 			<Suspense fallback={<div>Loading...</div>}>
 				<OtherComponent />
 			</Suspense>
 		</div>
 	)
 }
-export default CodeSplitting

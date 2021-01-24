@@ -3,7 +3,6 @@ import { Dispatch } from 'redux'
 import { connect } from 'react-redux'
 import { State } from '../store';
 import { Action, ACTION } from '../store/actions';
-import React from 'react'
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { TodoFilter } from '../store/todo';
 
