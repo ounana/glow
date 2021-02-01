@@ -38,7 +38,7 @@
   width: 100px;
 }
 .tf .pred .pred-correct {
-  background-color: green;
+  background-color: #34d66a;
 }
 .tf .pred .pred-incorrect {
   background-color: red;

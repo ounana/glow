@@ -1,9 +1,9 @@
 import { createRef, PureComponent } from 'react'
 import * as tf from '@tensorflow/tfjs';
 import { loadImageData, loadLabelData, IMAGE_SIZE, IMAGE_H, IMAGE_W, NUM_CLASSES } from './MnistData'
-import './index.css'
 import * as G2 from '@antv/g2'
 import { Button, message, InputNumber, Alert, Progress } from 'antd'
+import './index.css'
 
 export default class Tensorflow extends PureComponent {
   imagesRef = createRef<HTMLDivElement>()
@@ -25,8 +25,10 @@ export default class Tensorflow extends PureComponent {
     trainEpoch: 1,
     valAcc: 0,
     valLoss: 0,
-    trainProgress: 0
+    trainProgress: 0,
+    predictResult: null
   }
+
   componentDidMount() {
     this.drawCanvas()
     this.renderChart()
@@ -97,8 +99,13 @@ export default class Tensorflow extends PureComponent {
         }
       }
     })
-  }
 
+    // const testResult = model.evaluate(xs, ys)
+    // console.log(testResult)
+  }
+  /**
+   * Creates a convolutional neural network (Convnet) for the MNIST data.
+   */
   createConvModel = () => {
     if (this.model) {
       return message.success('Model is created!')
@@ -118,6 +125,29 @@ export default class Tensorflow extends PureComponent {
     model.add(tf.layers.dense({ units: 64, activation: 'relu' }))
     model.add(tf.layers.dense({ units: 10, activation: 'softmax' }))
 
+    model.summary()
+    this.model = model
+    message.success('Model create done!')
+  }
+
+  /**
+   * Creates a model consisting of only flatten, dense and dropout layers.
+   *
+   * The model create here has approximately the same number of parameters
+   * (~31k) as the convnet created by `createConvModel()`, but is
+   * expected to show a significantly worse accuracy after training, due to the
+   * fact that it doesn't utilize the spatial information as the convnet does.
+   *
+   * This is for comparison with the convolutional network above.
+   */
+  createDenseModel = () => {
+    if (this.model) {
+      return message.success('Model is created!')
+    }
+    const model = tf.sequential()
+    model.add(tf.layers.flatten({ inputShape: [IMAGE_H, IMAGE_W, 1] }))
+    model.add(tf.layers.dense({ units: 42, activation: 'relu' }))
+    model.add(tf.layers.dense({ units: 10, activation: 'softmax' }))
     model.summary()
     this.model = model
     message.success('Model create done!')
@@ -219,9 +249,11 @@ export default class Tensorflow extends PureComponent {
     let xs = tf.tensor4d(image, [1, IMAGE_H, IMAGE_W, 1])
     var pre = model.predict(xs) as tf.Tensor<tf.Rank>
     var pIndex = tf.argMax(pre, 1).dataSync()
-    console.log(pIndex)
+    this.setState({ ...this.state, predictResult: pIndex[0] })
+    // console.log(pIndex[0])
 
     drawref.getContext('2d')!.fillRect(0, 0, 280, 280)
+
     xs.dispose()
     pre.dispose()
   }
@@ -409,6 +441,7 @@ export default class Tensorflow extends PureComponent {
         <div className="draw">
           <canvas ref={this.drawref}></canvas>
           <img alt="" ref={this.canvasImgref} style={{ width: 280, height: 280, marginLeft: '2px' }}></img>
+          <span style={{ fontSize: '80px', marginLeft: '30px', fontWeight: 600 }}>{this.state.predictResult}</span>
         </div>
       </div>
     )

@@ -1,115 +1,128 @@
-import { useEffect } from "react"
+import { Button } from "antd"
+import { PureComponent } from "react"
 
-export default function IndexDb() {
-  useEffect(() => {
-    // let db: IDBDatabase
-    // //打开数据库，如果没有则创建
-    // let request = window.indexedDB.open('myDB', 1)
-    // //捕捉错误
-    // request.addEventListener('error', function (e) {
-    //   console.log('数据库打开失败')
-    // })
-    // request.addEventListener('success', function (e) {
-    //   console.log('打开数据库成功')
-    //   //得到数据库数据
-    //   db = request.result
-    //   // add()
-    //   read()
-    //   // updata()
-    //   // remove()
-    //   readAll()
-    //   // deleteDB('myDB')
+export default class IndexDb extends PureComponent {
+  db: IDBDatabase | null = null
 
-    //   // close(db)
-    // })
-    // request.addEventListener('upgradeneeded', function (e:IDBVersionChangeEvent) {
-    //   console.log('数据库已创建/升级')
-      
-    //   db = e.target.result
+  onREADData = () => {
+    if (!this.db) return
+    let transaction = this.db.transaction(['person'], 'readonly')
+    let objectStore = transaction.objectStore('person')
+    // let request=objectStore.get(1)//通过主键读取数据
+    let request = objectStore.index('name').get('Tom')//通过索引读取数据
+    request.addEventListener('error', (e) => {
+      console.log('读取失败')
+    })
+    request.addEventListener('success', (e: any) => {
+      console.log(e.target.result)
+    })
+  }
 
-    //   //建表
-    //   let objectStore
-    //   if (!db.objectStoreNames.contains('person')) {//判断表是否存在
-    //     // objectStore=db.createObjectStore('person',{autoIncrement:true})//默认设置主键、自增
-    //     objectStore = db.createObjectStore('person', { keyPath: 'id', autoIncrement: true })//自定义主键名称，自增
+  onOpenDb = () => {
+    //打开数据库，如果没有则创建
+    let request = window.indexedDB.open('myDB', 1)
+    //捕捉错误
+    request.addEventListener('error', function (e) {
+      console.log('数据库打开失败')
+      console.log(e)
+    })
 
-    //     //设置三个参数：索引名称、索引所在的属性、配置对象（说明该属性是否包含重复的值）
-    //     objectStore.createIndex('name', 'name', { unique: true })//不能重复
-    //     objectStore.createIndex('email', 'email')
-    //   }
-    // })
+    request.addEventListener('success', evt => {
+      console.log('打开数据库成功')
+      //得到数据库数据
+      this.db = request.result
 
-    // let add = function () {
-    //   let request = db.transaction(['person'], 'readwrite')
-    //     .objectStore('person')
-    //     .add({ name: 'Kemi', email: 'Kemi@qq.com' })
-    //   //写入数据是异步操作，所以需要监听是否成功
-    //   request.addEventListener('success', function (e) {
-    //     console.log('数据写入成功')
-    //   })
-    //   request.addEventListener('error', function (e) {
-    //     console.log('数据写入失败')
-    //   })
-    // }
+      // this.add()
+      // this.read()
+      // updata()
+      // remove()
+      // readAll()
+      // deleteDB('myDB')
 
-    // let read = function () {
-    //   let transaction = db.transaction(['person'], 'readonly')
-    //   let objectStore = transaction.objectStore('person')
-    //   // let request=objectStore.get(1)//通过索引获取数据
-    //   let request = objectStore.index('name').get('Tom')//通过索引获取数据
-    //   request.addEventListener('error', function (e) {
-    //     console.log('读取失败')
-    //   })
-    //   request.addEventListener('success', function (e) {
-    //     let result = e.target.result
-    //     console.log(result)
-    //     console.log(result.name + ',' + result.email)
-    //   })
-    // }
+      // close(db)
+    })
 
-    // let readAll = function () {
-    //   let objectStore = db.transaction(['person']).objectStore('person')
-    //   objectStore.openCursor().addEventListener('success', function (e) {
-    //     let cursor = e.target.result
-    //     if (cursor) {
-    //       console.log(cursor.key + ',' + cursor.value.name + ',' + cursor.value.email)
-    //       cursor.continue()
-    //     } else {
-    //       console.log('没有数据了')
-    //     }
-    //   })
-    // }
+    request.addEventListener('upgradeneeded', (e: any) => {
+      console.log('数据库创建/升级成功')
+      this.db = e.target.result as IDBDatabase
+      //判断表是否存在
+      if (!this.db.objectStoreNames.contains('person')) {
+        //建表，定义主键，自增
+        const objectStore = this.db.createObjectStore('person', {
+          keyPath: 'id', autoIncrement: true
+        })
+        //创建索引名称，配置属性
+        objectStore.createIndex('name', 'name', { unique: true })//不能重复
+        objectStore.createIndex('email', 'email')
+      }
+    })
+  }
 
-    // let updata = function () {
-    //   let request = db.transaction(['person'], 'readwrite')
-    //     .objectStore('person')
-    //     .put({ id: 1, name: 'Tom', email: 'Tom@qq.com' })
-    //   request.addEventListener('success', function (e) {
-    //     console.log('数据更新成功')
-    //   })
-    //   request.addEventListener('error', function (e) {
-    //     console.log('数据更新失败')
-    //   })
-    // }
+  onAddData = () => {
+    if (!this.db) return
+    let request = this.db.transaction(['person'], 'readwrite')
+      .objectStore('person')
+      .add({ name: 'Tom', email: 'Tom@qq.com' })
+    //写入数据是异步操作，所以需要监听是否成功
+    request.addEventListener('success', function (e) {
+      console.log('数据写入成功')
+    })
+    request.addEventListener('error', function (e) {
+      console.log('数据写入失败')
+    })
+  }
 
-    // let remove = function () {
-    //   let request = db.transaction(['person'], 'readwrite')
-    //     .objectStore('person')
-    //     .delete(4)
-    //   request.addEventListener('success', function (e) {
-    //     console.log('数据删除成功')
-    //   })
-    // }
+  onReadAll = () => {
+    if (!this.db) return
+    let objectStore = this.db.transaction(['person']).objectStore('person')
+    objectStore.openCursor().addEventListener('success', (e: any) => {
+      let cursor = e.target.result
+      if (cursor) {
+        console.log(cursor.value)
+        cursor.continue()
+      } else {
+        console.log('没有数据了')
+      }
+    })
+  }
 
-    // let close = function (db: IDBDatabase) {
-    //   db.close()
-    // }
-
-    // let deleteDB = function (dbName: string) {
-    //   indexedDB.deleteDatabase(dbName)
-    // }
-  }, [])
-  return (
-    <div>Index Db</div>
-  )
+  onUpdata = () => {
+    if (!this.db) return
+    let request = this.db.transaction(['person'], 'readwrite')
+      .objectStore('person')
+      .put({ id: 2, name: 'Tom', email: 'Toms@qq.com' })
+    request.addEventListener('success', function (e) {
+      console.log('数据更新成功')
+    })
+    request.addEventListener('error', function (e) {
+      console.log('数据更新失败')
+    })
+  }
+  remove = () => {
+    if (!this.db) return
+    let request = this.db.transaction(['person'], 'readwrite')
+      .objectStore('person')
+      .delete(4)
+    request.addEventListener('success', function (e) {
+      console.log('数据删除成功')
+    })
+  }
+  close = () => {
+    this.db?.close()
+  }
+  deleteDb = () => {
+    window.indexedDB.deleteDatabase('myDB')
+  }
+  render() {
+    return (
+      <div>
+        <h1>Index Db</h1>
+        <Button onClick={this.onOpenDb}>OPEN DB</Button>
+        <Button onClick={this.onAddData}>ADD DATA</Button>
+        <Button onClick={this.onREADData}>READ DATA</Button>
+        <Button onClick={this.onReadAll}>READ ALL</Button>
+        <Button onClick={this.onUpdata}>UPDATA</Button>
+      </div>
+    )
+  }
 }

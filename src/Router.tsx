@@ -11,6 +11,7 @@ const Test = lazy(() => import('./test/Test'))
 const Reduxd = lazy(() => import('./reduxd'))
 const Paperd = lazy(() => import('./paperd'))
 const Rxjsd = lazy(() => import('./rxjsd'))
+const Game = lazy(()=> import('./game'))
 
 export default function Router() {
   return (
@@ -23,6 +24,7 @@ export default function Router() {
           <Route path="/reduxd" component={Reduxd} />
           <Route path="/paperd" component={Paperd} />
           <Route path="/rxjsd" component={Rxjsd} />
+          <Route path="/game" component={Game} />
 
           <Redirect from="*" to="/tensorflow"></Redirect>
         </Switch>
