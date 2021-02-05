@@ -7,7 +7,8 @@ enum GESTURE {
   Paper = 1,
   Scissors = 2
 }
-export default class Tsfy extends PureComponent {
+
+export default class ImageClassify extends PureComponent {
   videoRef = createRef<HTMLVideoElement>()
   canvasRef = createRef<HTMLCanvasElement>()
   xs: tf.Tensor4D | null = null
@@ -23,12 +24,12 @@ export default class Tsfy extends PureComponent {
   async downloadMobilenet() {
     const mobilenet = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json')
     const layer = mobilenet.getLayer('conv_pw_13_relu')
-    const mymodel = tf.model({ inputs: mobilenet.inputs, outputs: layer.output })
-    await mymodel.save('downloads://mobilenet')
+    const model = tf.model({ inputs: mobilenet.inputs, outputs: layer.output })
+    await model.save('downloads://mobilenet')
     console.log('模型下载成功')
   }
   async loadMobilenet() {
-    this.mobilenet = await tf.loadLayersModel('http://localhost:4000/model/mobilenet.json')
+    this.mobilenet = await tf.loadLayersModel('/model/mobilenet.json')
     console.log('模型加载成功')
   }
   createModel = () => {
@@ -54,6 +55,8 @@ export default class Tsfy extends PureComponent {
       video.onloadedmetadata = evt => {
         video.play()
       }
+    }).catch(err => {
+      console.log(err)
     })
   }
 
@@ -67,7 +70,6 @@ export default class Tsfy extends PureComponent {
         }
       }
     })
-
   }
   onPredict = () => {
     if (!this.model || !this.mobilenet) return
