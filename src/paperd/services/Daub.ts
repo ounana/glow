@@ -1,4 +1,3 @@
-import { PaperScope } from "paper";
 import { Service } from ".";
 
 // import store from "../../store";
@@ -14,13 +13,13 @@ export class Daub implements Service {
     class: this.paper.Path,
     tolerance: 30
   }
-  constructor(public readonly paper: PaperScope) {
+  constructor(public readonly paper: paper.PaperScope) {
     this.circle = new paper.Path.Circle({
       center: [80, 50],
       radius: 30,
       strokeColor: 'black'
     })
-    
+
     this.paper.view.on('mouseup', this.onMouseUp)
     this.paper.view.on('mousemove', this.onMouseMove)
     this.paper.view.on('mousedrag', this.onMouseDrag)

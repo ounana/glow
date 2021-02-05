@@ -2,11 +2,10 @@ import { Daub } from "./Daub";
 import { Move } from "./Move";
 import { Draw } from "./Draw";
 import { Union } from "./Union";
-import { PaperScope } from "paper";
 
 export abstract class Service {
   static namespace: string
-  constructor(public readonly paper: PaperScope) { }
+  constructor(public readonly paper: paper.PaperScope) { }
   abstract destroy(): void
 }
 
@@ -15,7 +14,7 @@ export class ServiceCore {
   Services = [Daub, Move, Draw, Union]
   service: ServiceType | null = null
   serviceName: string | null = null
-  constructor(public readonly paper: PaperScope) { }
+  constructor(public readonly paper: paper.PaperScope) { }
 
   getService(name: string) {
     return this.Services.find(s => s.namespace === name)

@@ -1,9 +1,9 @@
-import Tensor from './Tensor'
+import Tsfy from './Tsfy'
 
 export default function Tensorflowd() {
   return(
     <div>
-      <Tensor/>
+      <Tsfy/>
     </div>
   )
 }

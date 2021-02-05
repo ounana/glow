@@ -1,4 +1,3 @@
-import { PaperScope } from "paper";
 import { Service } from ".";
 
 // import store from "../../store";
@@ -8,7 +7,7 @@ export class Draw implements Service {
   static namespace = 'draw'
   path: paper.Path | null = null
   start: paper.Point | null = null
-  constructor(public paper: PaperScope) {
+  constructor(public paper: paper.PaperScope) {
     this.paper.view.on('mouseup', this.onMouseUp)
     this.paper.view.on('mousedrag', this.onMouseDrag)
     this.paper.view.on('mousedown', this.onMouseDown)

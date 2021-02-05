@@ -1,4 +1,3 @@
-import { PaperScope } from "paper";
 import { Service } from ".";
 
 export class Move implements Service {
@@ -12,7 +11,7 @@ export class Move implements Service {
     fill: true,
     tolerance: 5
   }
-  constructor(public readonly paper: PaperScope) {
+  constructor(public readonly paper: paper.PaperScope) {
     this.paper.view.on('mousemove', this.onMouseMove)
     this.paper.view.on('mousedrag', this.onMouseDrag)
     this.paper.view.on('mousedown', this.onMouseDown)

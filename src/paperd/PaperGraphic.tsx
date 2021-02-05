@@ -1,6 +1,6 @@
 import { createRef, PureComponent } from 'react'
 import { Row, Col, Radio } from 'antd'
-import { PaperScope } from 'paper'
+import * as paper from 'paper'
 import Panel from './Panel';
 import { ServiceCore } from './services';
 import { RadioChangeEvent } from 'antd/lib/radio';
@@ -9,12 +9,12 @@ import { debounceTime, map } from 'rxjs/operators';
 
 export default class PaperGraphic extends PureComponent {
   paperdom = createRef<HTMLDivElement>()
-  paper: PaperScope
+  paper: paper.PaperScope
   serviceCore: ServiceCore
   rePaperSub: Subscription | null = null
   constructor(props: {}) {
     super(props)
-    this.paper = new PaperScope()
+    this.paper = new paper.PaperScope()
     this.serviceCore = new ServiceCore(this.paper)
   }
 
