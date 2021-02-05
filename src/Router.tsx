@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom"
 
-const Tensorflow = lazy(() => import('./tensorflow/Tensorflow'))
+const Tensorflow = lazy(() => import('./tensorflow'))
 const Test = lazy(() => import('./test/Test'))
 const Reduxd = lazy(() => import('./reduxd'))
 const Paperd = lazy(() => import('./paperd'))
