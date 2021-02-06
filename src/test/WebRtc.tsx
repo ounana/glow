@@ -12,13 +12,14 @@ export default class WebRtc extends PureComponent {
   state = {
     recorderState: 'inactive'
   }
+  chunks: any[] = []
   componentDidMount() {
     this.getMediaStream()
   }
 
   drawNextFrame = () => {
     if (!this.analyser) return
-    requestAnimationFrame(this.drawNextFrame)
+    // requestAnimationFrame(this.drawNextFrame)
     const dataArray = this.dataArray
     const bufferLength = dataArray.length
     const canvas = this.canvasRef.current!
@@ -64,24 +65,28 @@ export default class WebRtc extends PureComponent {
       this.analyser = new AnalyserNode(audioCtx)
       source.connect(this.analyser)
       this.drawNextFrame()
+      
 
     }).catch(err => {
       console.log(err)
     })
   }
+
   onDataAvailable = (evt: any) => {
     console.log(evt.data)
+    this.chunks.push(evt.data)
     const audicBox = this.audioBoxRef.current!
-    const audio = document.createElement('audio')
+    const audio = document.createElement('video')
     audio.controls = true
-    // const blob = new Blob(this.chunks, { 'type': 'audio/ogg; codecs=opus' })
-    const audioURL = window.URL.createObjectURL(evt.data)
+    const blob = new Blob(this.chunks, { 'type': 'audio/webm; codecs=opus' })
+    this.chunks=[]
+    const audioURL = window.URL.createObjectURL(blob)
     audio.src = audioURL
     audicBox.appendChild(audio)
   }
   onRecordClick = () => {
     if (this.mediaRecorder.state === 'inactive') {
-      this.mediaRecorder.start()
+      this.mediaRecorder.start(1000)
       this.setState({ ...this.state, recorderState: 'recording' })
     }
   }
