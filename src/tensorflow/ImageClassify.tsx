@@ -48,13 +48,31 @@ export default class ImageClassify extends PureComponent {
   setup() {
     const video = this.videoRef.current!
     navigator.mediaDevices.getUserMedia({
-      // audio: true,
-      video: { width: 224, height: 224 }
+      audio: true,
+      // video: { width: 224, height: 224 }
     }).then(stream => {
+      console.log(stream)
       video.srcObject = stream
-      video.onloadedmetadata = evt => {
-        video.play()
+      video.play()
+
+      const peer: any = new window.RTCPeerConnection()
+      console.log(peer)
+      peer.onicecandidate = (evt: any) => {
+        console.log(evt)
+        peer.addIceCandidate(evt.candidate)
       }
+      peer.addStream(stream)
+
+
+
+
+
+
+
+
+
+
+
     }).catch(err => {
       console.log(err)
     })
