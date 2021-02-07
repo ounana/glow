@@ -1,10 +1,9 @@
-
-import ImageClassify from './ImageClassify'
+import TensorImage from './TensorImage'
 
 export default function Tensorflowd() {
   return(
     <div>
-      <ImageClassify/>
+      <TensorImage/>
     </div>
   )
 }
