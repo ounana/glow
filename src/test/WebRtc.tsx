@@ -65,7 +65,7 @@ export default class WebRtc extends PureComponent {
       this.analyser = new AnalyserNode(audioCtx)
       source.connect(this.analyser)
       this.drawNextFrame()
-      
+
 
     }).catch(err => {
       console.log(err)
@@ -76,17 +76,16 @@ export default class WebRtc extends PureComponent {
     console.log(evt.data)
     this.chunks.push(evt.data)
     const audicBox = this.audioBoxRef.current!
-    const audio = document.createElement('video')
+    const audio = document.createElement('audio')
     audio.controls = true
-    const blob = new Blob(this.chunks, { 'type': 'audio/webm; codecs=opus' })
-    this.chunks=[]
-    const audioURL = window.URL.createObjectURL(blob)
+    // const blob = new Blob(this.chunks, { 'type': 'audio/webm; codecs=opus' })
+    const audioURL = window.URL.createObjectURL(evt.data)
     audio.src = audioURL
     audicBox.appendChild(audio)
   }
   onRecordClick = () => {
     if (this.mediaRecorder.state === 'inactive') {
-      this.mediaRecorder.start(1000)
+      this.mediaRecorder.start()
       this.setState({ ...this.state, recorderState: 'recording' })
     }
   }
