@@ -57,7 +57,6 @@ export default class Tensorflow extends PureComponent {
     this.setState({ ...this.state, trainPending: true })
     console.log('Training model...')
     const model = this.model
-    model.compile({ optimizer: 'rmsprop', loss: 'categoricalCrossentropy', metrics: ['accuracy'] })
     const batchSize = 320
     //遗留15%的训练数据进行验证，以监控训练期间的过度拟合
     const validationSplit = 0.15
@@ -124,7 +123,7 @@ export default class Tensorflow extends PureComponent {
     model.add(tf.layers.flatten({}))
     model.add(tf.layers.dense({ units: 64, activation: 'relu' }))
     model.add(tf.layers.dense({ units: 10, activation: 'softmax' }))
-
+    model.compile({ optimizer: 'rmsprop', loss: 'categoricalCrossentropy', metrics: ['accuracy'] })
     model.summary()
     this.model = model
     message.success('Model create done!')
@@ -148,6 +147,7 @@ export default class Tensorflow extends PureComponent {
     model.add(tf.layers.flatten({ inputShape: [IMAGE_H, IMAGE_W, 1] }))
     model.add(tf.layers.dense({ units: 42, activation: 'relu' }))
     model.add(tf.layers.dense({ units: 10, activation: 'softmax' }))
+    model.compile({ optimizer: 'rmsprop', loss: 'categoricalCrossentropy', metrics: ['accuracy'] })
     model.summary()
     this.model = model
     message.success('Model create done!')

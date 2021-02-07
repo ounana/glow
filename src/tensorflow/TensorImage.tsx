@@ -15,6 +15,21 @@ export default class TensorImage extends PureComponent {
   model: tf.Sequential | null = null
   xs: tf.Tensor4D | null = null
   ys: tf.Tensor2D | null = null
+  state = {
+    rock: 0,
+    paper: 0,
+    scissors: 0
+  }
+  updateCount = (sha: SHAPE) => {
+    switch (sha) {
+      case 0:
+        return this.setState({ ...this.state, rock: this.state.rock + 1 })
+      case 1:
+        return this.setState({ ...this.state, paper: this.state.paper + 1 })
+      case 2:
+        return this.setState({ ...this.state, scissors: this.state.scissors + 1 })
+    }
+  }
   onOpenCameraClick = () => {
     const video = this.videoRef.current!
     const { width, height } = video
@@ -61,6 +76,7 @@ export default class TensorImage extends PureComponent {
     const ys = tf.tensor2d(ysd, [1, 3])
     this.keepXs(xs)
     this.keepYs(ys)
+    this.updateCount(sha)
 
     //预览图片
     const image = image3d.dataSync()
@@ -75,15 +91,21 @@ export default class TensorImage extends PureComponent {
     ctx.putImageData(imageData, 0, 0)
   }
   createModel = () => {
-    const model = tf.sequential({
-      layers: [
-        tf.layers.flatten({ inputShape: [28, 28, 1] }),
-        tf.layers.dense({ units: 100, activation: 'relu' }),
-        tf.layers.dense({ units: 3, activation: 'softmax' })
-      ]
-    })
-    const optimizer = tf.train.adam(0.0001)
-    model.compile({ optimizer: optimizer, loss: 'categoricalCrossentropy' })
+    const model = tf.sequential()
+    model.add(tf.layers.conv2d({
+      inputShape: [28, 28, 1],
+      kernelSize: 3,
+      filters: 16,
+      activation: 'relu'
+    }))
+    model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
+    model.add(tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: 'relu' }))
+    model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
+    model.add(tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: 'relu' }))
+    model.add(tf.layers.flatten())
+    model.add(tf.layers.dense({ units: 64, activation: 'relu' }))
+    model.add(tf.layers.dense({ units: 3, activation: 'softmax' }))
+    model.compile({ optimizer: 'rmsprop', loss: 'categoricalCrossentropy', metrics: ['accuracy'] })
     model.summary()
     this.model = model
   }
@@ -98,7 +120,17 @@ export default class TensorImage extends PureComponent {
       }
     })
   }
+  predict = () => {
+    if (!this.model || !this.xs) return
+    const video = this.videoRef.current!
+    const image3d = tf.browser.fromPixels(video, 1)
+    const resized = tf.image.resizeBilinear(image3d, [28, 28])
+    const xs = resized.as4D(1, 28, 28, 1)
+    const prediction = this.model.predict(xs) as tf.Tensor
+    console.log(prediction.argMax(1).dataSync())
+  }
   render() {
+    const { rock, paper, scissors } = this.state
     return (
       <div style={{ padding: '20px' }}>
         <video
@@ -122,6 +154,10 @@ export default class TensorImage extends PureComponent {
           <Button onClick={() => this.onKeepImage(SHAPE.Rock)} size="large">Rock</Button>
           <Button onClick={() => this.onKeepImage(SHAPE.Paper)} size="large">Paper</Button>
           <Button onClick={() => this.onKeepImage(SHAPE.Scissors)} size="large">Scissors</Button>
+          <h2>Rock: {rock}, Paper: {paper}, Scissors: {scissors}</h2>
+          <Divider />
+          <Button onClick={this.predict}>PREDICT</Button>
+
         </div>
 
       </div>

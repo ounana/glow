@@ -19,7 +19,6 @@ export default class ImageClassify extends PureComponent {
     this.setup()
     this.createModel()
     this.loadMobilenet()
-    // this.downloadMobilenet()
   }
   async downloadMobilenet() {
     const mobilenet = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json')
@@ -36,10 +35,19 @@ export default class ImageClassify extends PureComponent {
     const model = tf.sequential({
       layers: [
         tf.layers.flatten({ inputShape: [7, 7, 256] }),
-        tf.layers.dense({ units: 100, activation: 'relu' }),
-        tf.layers.dense({ units: 3, activation: 'softmax' })
+        tf.layers.dense({
+          units: 100, activation: 'relu',
+          kernelInitializer: 'varianceScaling',
+          useBias: true
+        }),
+        tf.layers.dense({
+          units: 3, activation: 'softmax',
+          kernelInitializer: 'varianceScaling',
+          useBias: false
+        })
       ]
     })
+    // learning rate
     const optimizer = tf.train.adam(0.0001)
     model.compile({ optimizer: optimizer, loss: 'categoricalCrossentropy' })
     model.summary()
@@ -48,7 +56,6 @@ export default class ImageClassify extends PureComponent {
   setup() {
     const video = this.videoRef.current!
     navigator.mediaDevices.getUserMedia({
-      // audio: true,
       video: { width: 224, height: 224 }
     }).then(stream => {
       video.srcObject = stream
@@ -59,8 +66,10 @@ export default class ImageClassify extends PureComponent {
   }
   onTrain = () => {
     if (!this.xs || !this.ys || !this.model) return
+    const batchSize = this.xs.shape[0] * 0.4
     this.model.fit(this.xs, this.ys, {
-      epochs: 50,
+      batchSize,
+      epochs: 20,
       callbacks: {
         onEpochEnd: (epoch, logs: any) => {
           console.log("Epoch: " + epoch + " Loss: " + logs.loss)
