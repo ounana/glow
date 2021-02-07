@@ -16,7 +16,6 @@ export default class WebRtc extends PureComponent {
   componentDidMount() {
     this.getMediaStream()
   }
-
   drawNextFrame = () => {
     if (!this.analyser) return
     // requestAnimationFrame(this.drawNextFrame)
@@ -52,7 +51,8 @@ export default class WebRtc extends PureComponent {
 
   getMediaStream() {
     navigator.mediaDevices.getUserMedia({
-      audio: true
+      audio: true,
+      // video: true
     }).then(stream => {
       this.mediaStream = stream
       this.mediaRecorder = new window.MediaRecorder(stream)
@@ -65,7 +65,7 @@ export default class WebRtc extends PureComponent {
       this.analyser = new AnalyserNode(audioCtx)
       source.connect(this.analyser)
       this.drawNextFrame()
-      
+
 
     }).catch(err => {
       console.log(err)
@@ -76,11 +76,10 @@ export default class WebRtc extends PureComponent {
     console.log(evt.data)
     this.chunks.push(evt.data)
     const audicBox = this.audioBoxRef.current!
-    const audio = document.createElement('video')
+    const audio = document.createElement('audio')
     audio.controls = true
-    const blob = new Blob(this.chunks, { 'type': 'audio/webm; codecs=opus' })
-    this.chunks=[]
-    const audioURL = window.URL.createObjectURL(blob)
+    // const blob = new Blob(this.chunks, { 'type': 'audio/ogg; codecs=opus' })
+    const audioURL = window.URL.createObjectURL(evt.data)
     audio.src = audioURL
     audicBox.appendChild(audio)
   }
