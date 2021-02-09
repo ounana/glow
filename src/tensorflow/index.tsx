@@ -1,9 +1,9 @@
-import TensorImage from './TensorImage'
+import TestTensor from './TestTensor'
 
 export default function Tensorflowd() {
   return(
     <div>
-      <TensorImage/>
+      <TestTensor/>
     </div>
   )
 }

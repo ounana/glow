@@ -2,16 +2,11 @@ import { Button, Divider } from "antd";
 import { createRef, PureComponent } from "react";
 import * as tf from '@tensorflow/tfjs'
 
-enum SHAPE {
-  Rock = 0,
-  Paper = 1,
-  Scissors = 2
-}
+enum SHAPE { Rock, Paper, Scissors }
 
 export default class TensorImage extends PureComponent {
   videoRef = createRef<HTMLVideoElement>()
   canvasRef = createRef<HTMLCanvasElement>()
-  mediaStream: MediaStream | null = null
   model: tf.Sequential | null = null
   xs: tf.Tensor4D | null = null
   ys: tf.Tensor2D | null = null
@@ -37,7 +32,6 @@ export default class TensorImage extends PureComponent {
       video: { width, height }
     }).then(mediaStream => {
       video.srcObject = mediaStream
-      this.mediaStream = mediaStream
     }).catch(err => {
       console.log(err)
     })
@@ -65,6 +59,9 @@ export default class TensorImage extends PureComponent {
   onKeepImage = (sha: SHAPE) => {
     const video = this.videoRef.current!
     const canvas = this.canvasRef.current!
+    const [width, height] = [280, 280]
+    canvas.width = width
+    canvas.height = height
     const ctx = canvas.getContext('2d')!
     //只要一个通道，红色通道
     const image3d = tf.browser.fromPixels(video, 1)
@@ -80,8 +77,8 @@ export default class TensorImage extends PureComponent {
 
     //预览图片
     const image = image3d.dataSync()
-    const imageData = new ImageData(280, 280)
-    for (let i = 0; i < 280 * 280; i++) {
+    const imageData = new ImageData(width, height)
+    for (let i = 0; i < width * height; i++) {
       const j = i * 4
       imageData.data[j + 0] = image[i]
       imageData.data[j + 1] = 0
@@ -92,12 +89,7 @@ export default class TensorImage extends PureComponent {
   }
   createModel = () => {
     const model = tf.sequential()
-    model.add(tf.layers.conv2d({
-      inputShape: [28, 28, 1],
-      kernelSize: 3,
-      filters: 16,
-      activation: 'relu'
-    }))
+    model.add(tf.layers.conv2d({ inputShape: [28, 28, 1], kernelSize: 3, filters: 16, activation: 'relu' }))
     model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
     model.add(tf.layers.conv2d({ kernelSize: 3, filters: 32, activation: 'relu' }))
     model.add(tf.layers.maxPooling2d({ poolSize: 2, strides: 2 }))
@@ -132,21 +124,17 @@ export default class TensorImage extends PureComponent {
   render() {
     const { rock, paper, scissors } = this.state
     return (
-      <div style={{ padding: '20px' }}>
+      <div style={{ padding: '20px', display: 'flex' }}>
         <video
-          autoPlay
-          controls
+          autoPlay controls
           ref={this.videoRef}
           width={280} height={280}
-          style={{
-            marginRight: '10px',
-            verticalAlign: 'top'
-          }}
+          style={{ marginRight: '10px' }}
         />
-        <canvas ref={this.canvasRef} width={280} height={280} style={{
-          border: '.5px solid', verticalAlign: 'top', marginRight: '10px'
+        <canvas ref={this.canvasRef} style={{
+          border: '1px solid', marginRight: '10px', width: 280, height: 280
         }} />
-        <div style={{ display: 'inline-block' }}>
+        <div>
           <Button onClick={this.onOpenCameraClick} size="large">OPEN CAMERA</Button>
           <Button onClick={this.createModel} size="large">CREATE MODEL</Button>
           <Button onClick={this.train} size="large">TRAIN MODEL</Button>
@@ -156,10 +144,8 @@ export default class TensorImage extends PureComponent {
           <Button onClick={() => this.onKeepImage(SHAPE.Scissors)} size="large">Scissors</Button>
           <h2>Rock: {rock}, Paper: {paper}, Scissors: {scissors}</h2>
           <Divider />
-          <Button onClick={this.predict}>PREDICT</Button>
-
+          <Button size="large" onClick={this.predict}>PREDICT</Button>
         </div>
-
       </div>
     )
   }

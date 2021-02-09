@@ -1,6 +1,7 @@
 import { PureComponent } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { data } from './data'
+import { Rank } from "@tensorflow/tfjs";
 
 /**
  * Tensor -> 张量
@@ -13,7 +14,7 @@ import { data } from './data'
  * shape  形状
  * dtype  类型
  * 
- * 1d = [1,2,3]
+ * 1d = [1,2,3]            shape [3]
  * 2d = [[1],[2],[3]]      shape [3, 1]
  * 3d = [[[1,2]],[[3,4]]]  shape [2, 1, 2]
  * 4d = [[[[1]]],[[[2]]]]  shpe  [2, 1, 1, 1]
@@ -21,8 +22,15 @@ import { data } from './data'
 
 export default class TestTensor extends PureComponent {
   componentDidMount() {
-    this.trainIris()
+    // this.trainIris()
+
+
+    const real = tf.tensor1d([2.23, 3.25])
+    const imag = tf.tensor1d([4.75, 5.75])
+    tf.complex(real, imag).print()
   }
+
+
   tensor() {
     //一个2层张量，第一层三个值，第二层两个值
     const a = tf.tensor([1, 2, 3, 4, 5, 6], [3, 2])
