@@ -1,9 +1,9 @@
-import TestTensor from './TestTensor'
+import MnistTrain from './MnistTrain'
 
 export default function Tensorflowd() {
   return(
     <div>
-      <TestTensor/>
+      <MnistTrain/>
     </div>
   )
 }

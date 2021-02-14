@@ -1,7 +1,6 @@
 import { PureComponent } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { data } from './data'
-import { Rank } from "@tensorflow/tfjs";
 
 /**
  * Tensor -> 张量
@@ -23,11 +22,7 @@ import { Rank } from "@tensorflow/tfjs";
 export default class TestTensor extends PureComponent {
   componentDidMount() {
     // this.trainIris()
-
-
-    const real = tf.tensor1d([2.23, 3.25])
-    const imag = tf.tensor1d([4.75, 5.75])
-    tf.complex(real, imag).print()
+    
   }
 
 

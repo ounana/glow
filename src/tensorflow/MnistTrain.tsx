@@ -5,20 +5,19 @@ import * as G2 from '@antv/g2'
 import { Button, message, InputNumber, Alert, Progress } from 'antd'
 import './index.css'
 
-export default class Tensorflow extends PureComponent {
-  imagesRef = createRef<HTMLDivElement>()
-  drawref = createRef<HTMLCanvasElement>()
-  canvasImgref = createRef<HTMLImageElement>()
+export default class MnistTrain extends PureComponent {
+  imageBoxRef = createRef<HTMLDivElement>()
+  canvasRef = createRef<HTMLCanvasElement>()
+  imageRef = createRef<HTMLImageElement>()
 
   lossChart: G2.Chart | null = null
   accuracyChart: G2.Chart | null = null
 
   model: tf.Sequential | null = null
-  images: Float32Array | null = null
+  images: Uint8Array | null = null
   labels: Uint8Array | null = null
 
   trainBatchCount: number = 0
-
   state = {
     mnistDataPending: false,
     trainPending: false,
@@ -30,7 +29,7 @@ export default class Tensorflow extends PureComponent {
   }
 
   componentDidMount() {
-    this.drawCanvas()
+    this.initCanvas()
     this.renderChart()
   }
 
@@ -83,12 +82,12 @@ export default class Tensorflow extends PureComponent {
           this.setState({ trainProgress, valAcc: logs.acc, valLoss: logs.loss })
           this.updateChart(logs.loss, logs.acc)
           if (batch % 10 === 0) {
-            this.viewImg()
+            this.testImagePredict()
           }
           await tf.nextFrame()
         },
         onEpochEnd: async (epoch, logs: any) => {
-          console.log('epoch done!')
+          console.log("Epoch: " + epoch + " Loss: " + logs.loss)
           this.setState({ valAcc: logs.val_acc, valLoss: logs.val_loss })
           await tf.nextFrame()
         },
@@ -98,13 +97,8 @@ export default class Tensorflow extends PureComponent {
         }
       }
     })
-
-    // const testResult = model.evaluate(xs, ys)
-    // console.log(testResult)
   }
-  /**
-   * Creates a convolutional neural network (Convnet) for the MNIST data.
-   */
+
   createConvModel = () => {
     if (this.model) {
       return message.success('Model is created!')
@@ -129,16 +123,6 @@ export default class Tensorflow extends PureComponent {
     message.success('Model create done!')
   }
 
-  /**
-   * Creates a model consisting of only flatten, dense and dropout layers.
-   *
-   * The model create here has approximately the same number of parameters
-   * (~31k) as the convnet created by `createConvModel()`, but is
-   * expected to show a significantly worse accuracy after training, due to the
-   * fact that it doesn't utilize the spatial information as the convnet does.
-   *
-   * This is for comparison with the convolutional network above.
-   */
   createDenseModel = () => {
     if (this.model) {
       return message.success('Model is created!')
@@ -154,9 +138,9 @@ export default class Tensorflow extends PureComponent {
   }
 
   /**
-   * 渲染并显示图片
+   * 测试预测图片结果
    */
-  viewImg = () => {
+  testImagePredict = () => {
     if (!this.images || !this.labels || !this.model) return
     //获取图片总张数
     // console.log('Img total is ' + this.images.length / 784)
@@ -166,24 +150,24 @@ export default class Tensorflow extends PureComponent {
     //截取图片
     const images = this.images.slice(IMAGE_SIZE * range[0], range[1] * IMAGE_SIZE)
     const labels = this.labels.slice(NUM_CLASSES * range[0], range[1] * NUM_CLASSES)
-    /**
-     * [0,0,0, ...784*图片张数], [图片张数, 宽, 高, 1]
-     */
-    let xs = tf.tensor4d(images, [images.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1])
+
+    // tensor4d ->  [n 28 28 1]
+    const xs = tf.tensor4d(images, [images.length / IMAGE_SIZE, IMAGE_H, IMAGE_W, 1])
 
     //获取真实结果
     const reals = labels.reduce<number[]>((cur, item, i) => item ? [...cur, i % 10] : cur, [])
     //预测结果
-    const output = this.model.predict(xs) as tf.Tensor<tf.Rank>
+    const output = this.model.predict(xs) as tf.Tensor2D
     const predictions = Array.from(output.argMax(1).dataSync())
     //必须显式的销毁
     xs.dispose()
+    output.dispose()
     this.renderCanvas(images, count, predictions, reals)
   }
 
-  renderCanvas(images: Float32Array, count: number, predictions: number[], reals: number[]) {
-    const imagesElement = this.imagesRef.current!
-    imagesElement.innerHTML = ''
+  renderCanvas(images: Uint8Array, count: number, predictions: number[], reals: number[]) {
+    const imageBox = this.imageBoxRef.current!
+    imageBox.innerHTML = ''
     for (let i = 0; i < count; i++) {
       const image = images.slice(i * 784, i * 784 + 784)
       const prediction = predictions[i]
@@ -210,9 +194,9 @@ export default class Tensorflow extends PureComponent {
        */
       for (let i = 0; i < height * width; i++) {
         const j = i * 4
-        imageData.data[j + 0] = image[i] * 255
-        imageData.data[j + 1] = image[i] * 255
-        imageData.data[j + 2] = image[i] * 255
+        imageData.data[j + 0] = image[i]
+        imageData.data[j + 1] = image[i]
+        imageData.data[j + 2] = image[i]
         imageData.data[j + 3] = 255
       }
       ctx.putImageData(imageData, 0, 0)
@@ -222,51 +206,34 @@ export default class Tensorflow extends PureComponent {
       pred.innerText = `预测: ${prediction}`
       div.appendChild(pred)
       div.appendChild(canvas)
-      imagesElement.appendChild(div)
+      imageBox.appendChild(div)
     }
   }
 
   predict = () => {
-    const canvasImg = this.canvasImgref.current
-    const drawref = this.drawref.current
-    const model = this.model
-    if (!model || !canvasImg || !drawref) {
+    const canvasImg = this.imageRef.current!
+    const drawCtx = this.canvasRef.current!.getContext('2d')!
+    if (!this.model) {
       return message.warning('Model is not created!')
     }
-    const ctx = document.createElement('canvas').getContext('2d') as CanvasRenderingContext2D
-    const scale = 0.1
-    ctx.drawImage(canvasImg, 0, 0, canvasImg.naturalWidth * scale, canvasImg.naturalHeight * scale)
-    const imageData = ctx.getImageData(0, 0, canvasImg.naturalWidth * scale, canvasImg.naturalHeight * scale)
 
     //只要红色通道
-    const image = new Float32Array(784)
-    for (let i = 0; i < 784; i++) {
-      image[i] = imageData.data[i * 4] / 255
-    }
-    /**
-     * [0,0,0, ...784*图片张数], [图片张数, 宽, 高, 1]
-     */
-    let xs = tf.tensor4d(image, [1, IMAGE_H, IMAGE_W, 1])
-    var pre = model.predict(xs) as tf.Tensor<tf.Rank>
-    var pIndex = tf.argMax(pre, 1).dataSync()
-    this.setState({ ...this.state, predictResult: pIndex[0] })
-    // console.log(pIndex[0])
+    const image3d = tf.browser.fromPixels(canvasImg, 1)
+    const resize = tf.image.resizeBilinear(image3d, [28, 28])
+    const image4d = resize.as4D(1, 28, 28, 1)
 
-    drawref.getContext('2d')!.fillRect(0, 0, 280, 280)
-
-    xs.dispose()
-    pre.dispose()
+    const prediction = this.model.predict(image4d) as tf.Tensor2D
+    const maxIndex = tf.argMax(prediction, 1).dataSync()
+    this.setState({ ...this.state, predictResult: maxIndex[0] })
+    drawCtx.fillRect(0, 0, 280, 280)
   }
 
-  drawCanvas = () => {
-    const canvas = this.drawref.current
-    const canvasImg = this.canvasImgref.current
-    if (!canvas || !canvasImg) return
-
+  initCanvas = () => {
+    const canvas = this.canvasRef.current!
+    const image = this.imageRef.current!
     canvas.width = 280
     canvas.height = 280
     const ctx = canvas.getContext('2d')!
-
     ctx.fillStyle = 'black'
     ctx.fillRect(0, 0, 280, 280)
     let moused = false
@@ -275,7 +242,7 @@ export default class Tensorflow extends PureComponent {
     })
     canvas.addEventListener('mouseup', (e) => {
       moused = false
-      canvasImg.src = canvas.toDataURL('image/png')
+      image.src = canvas.toDataURL('image/png')
     })
     canvas.addEventListener('mousemove', (e) => {
       if (!moused) return
@@ -370,18 +337,6 @@ export default class Tensorflow extends PureComponent {
   render() {
     return (
       <div className="tf">
-        <div className="mtitle">
-          TensorFlow.js: Digit Recognizer with Layers
-        </div>
-        <div className="ltitle">
-          Train a model to recognize handwritten digits from the MNIST database using the tf.layers api.
-        </div>
-        <div className="ftitle">
-          DESCRIPTION
-        </div>
-        <div>
-          This examples lets you train a handwritten digit recognizer using either a Convolutional Neural Network (also known as a ConvNet or CNN) or a Fully Connected Neural Network (also known as a DenseNet).<br />The MNIST dataset is used as training data.
-        </div>
         <div className="ftitle">
           TRAINING PARAMETERS
         </div>
@@ -414,7 +369,6 @@ export default class Tensorflow extends PureComponent {
               }
             }}
           />
-          {/* <Button onClick={this.viewImg} size="large">查看图片</Button> */}
         </div>
         <div className="ftitle">
           TRAINING PROGRESS
@@ -431,7 +385,7 @@ export default class Tensorflow extends PureComponent {
         <div className="ftitle">
           INFERENCE EXAMPLES
         </div>
-        <div ref={this.imagesRef} className="pred"></div>
+        <div ref={this.imageBoxRef} className="pred"></div>
         <div className="ftitle">
           TEST MODEL
         </div>
@@ -439,8 +393,8 @@ export default class Tensorflow extends PureComponent {
           <Button size="large" type="primary" onClick={this.predict}>PREDICT</Button>
         </div>
         <div className="draw">
-          <canvas ref={this.drawref}></canvas>
-          <img alt="" ref={this.canvasImgref} style={{ width: 280, height: 280, marginLeft: '2px' }}></img>
+          <canvas ref={this.canvasRef}></canvas>
+          <img alt="" ref={this.imageRef} style={{ width: 280, height: 280, marginLeft: '2px' }} />
           <span style={{ fontSize: '80px', marginLeft: '30px', fontWeight: 600 }}>{this.state.predictResult}</span>
         </div>
       </div>

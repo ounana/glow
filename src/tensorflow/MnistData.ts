@@ -7,19 +7,19 @@ export const IMAGE_SIZE = IMAGE_H * IMAGE_W
 
 /**
  * 图片像素点数据
- * 每784个位置表示一个图片
- * 每一个位置用三十二位浮点数存储一个像素点的灰度值，占用4个字节
+ * 宽 784 * 高 65000
+ * 每一行的784个像素点 -> 28 * 28 的一张图片
  * 
+ * 每一个位置用三十二位浮点数存储红色通道的像素值，占用4个字节
  * Float32Array 用用三十二位浮点数存储
  * length = 65000 * 784 | byteLength = 65000 * 784 * 4
- * 
- * 这张图 => 把一张图片的784个像素点放在每一行了
  */
+
 const NUM_DATASET_ELEMENTS = 65000
 const MNIST_IMAGES_SPRITE_PATH = './mnist_images.png'
 
 /**
- * 图片的真实值数据
+ * 图片label数据
  * Uint8Array 用8位无符号整数存储
  * length = 65000 * 10 | byteLength = 65000 * 10
  * 
@@ -36,34 +36,34 @@ const MNIST_LABELS_PATH = './mnist_labels_uint8'
  */
 const NUM_TRAIN_ELEMENTS = 50000
 
-export function loadImageData(): Promise<Float32Array> {
+export function loadImageData(): Promise<Uint8Array> {
   return new Promise((resolve) => {
     const img = new Image()
     const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d') as CanvasRenderingContext2D
+    const ctx = canvas.getContext('2d')!
     img.src = MNIST_IMAGES_SPRITE_PATH
     img.onload = () => {
       img.width = img.naturalWidth
       img.height = img.naturalHeight
-      const datasetBytesBuffer = new ArrayBuffer(NUM_DATASET_ELEMENTS * IMAGE_SIZE * 4);
+      const datasetBytesBuffer = new ArrayBuffer(NUM_DATASET_ELEMENTS * IMAGE_SIZE)
       //一次裁剪5000高度的图片，以获取像素，避免内存泄露
       const chunkSize = 5000
       canvas.width = img.width
       canvas.height = chunkSize
       for (let i = 0; i < NUM_DATASET_ELEMENTS / chunkSize; i++) {
-        const datasetBytesView = new Float32Array(
-          datasetBytesBuffer,
-          i * img.width * chunkSize * 4,
-          img.width * chunkSize
-        )
         ctx.drawImage(img, 0, i * chunkSize, img.width, chunkSize, 0, 0, img.width, chunkSize)
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        for (let j = 0; j < imageData.data.length / 4; j++) {
-          // 因为图像是灰度的，所以所有通道的值都相等，所以只要红色通道
-          datasetBytesView[j] = imageData.data[j * 4] / 255
+        const datasetBytesView = new Uint8Array(
+          datasetBytesBuffer,
+          i * img.width * chunkSize,
+          img.width * chunkSize
+        )
+        for (let j = 0; j < datasetBytesView.length; j++) {
+          //只要红色通道
+          datasetBytesView[j] = imageData.data[j * 4]
         }
       }
-      const datasetImages = new Float32Array(datasetBytesBuffer)
+      const datasetImages = new Uint8Array(datasetBytesBuffer)
       const res = datasetImages.slice(0, IMAGE_SIZE * NUM_TRAIN_ELEMENTS)
       resolve(res)
     }

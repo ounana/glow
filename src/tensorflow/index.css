@@ -1,15 +1,7 @@
 .tf {
-  margin: 20px 40px;
-  font-size: 16px;
+  padding: 20px 40px;
 }
 
-.tf .mtitle {
-  font-size: 50px;
-}
-.tf .ltitle {
-  font-size: 20px;
-  font-weight: 500;
-}
 .tf .ftitle {
   margin-top: 20px;
   font-size: 30px;
