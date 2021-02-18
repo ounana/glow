@@ -3,7 +3,7 @@
 package-lock.json
 build
 yarn.lock
-*.[eslintcache]
+.eslintcache
 
 # dependencies
 /node_modules

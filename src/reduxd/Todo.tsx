@@ -1,15 +1,13 @@
 import { Input, List, Radio } from 'antd'
-import { Dispatch } from 'redux'
-import { connect } from 'react-redux'
+import { connect, DispatchProp } from 'react-redux'
 import { State } from '../store';
 import { Action, ACTION } from '../store/actions';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { TodoFilter } from '../store/todo';
 
 let todoId = 0
-interface TodoProps extends ReturnType<typeof mapstate> {
-  dispatch: Dispatch<Action>
-}
+interface TodoProps extends ReturnType<typeof mapstate>, DispatchProp<Action> { }
+
 function Todo(props: TodoProps) {
   const { todo: { data, filter }, dispatch } = props
   const onSearch = (v: string) => {
@@ -18,6 +16,7 @@ function Todo(props: TodoProps) {
     dispatch({ type: ACTION.ADD_TODO, payload: todo })
   }
   const onTodoClick = (id: number) => {
+    dispatch({ type: ACTION.TOGGLE_TODO, payload: 2 })
     dispatch({ type: ACTION.TOGGLE_TODO, payload: id })
   }
   const onRadioChange = (e: RadioChangeEvent) => {

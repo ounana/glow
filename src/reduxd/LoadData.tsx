@@ -1,12 +1,10 @@
 import { Button, List } from 'antd'
-import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
+import { connect, DispatchProp } from 'react-redux'
 import { State } from '../store'
 import { ACTION, Action } from '../store/actions'
 
-interface LoadDataProps extends ReturnType<typeof mapstate> {
-  dispatch: Dispatch<Action>
-}
+interface LoadDataProps extends ReturnType<typeof mapstate>, DispatchProp<Action> { }
+
 function LoadData(props: LoadDataProps) {
   const { music: { data, pending }, dispatch } = props
   const onLoadClick = () => {

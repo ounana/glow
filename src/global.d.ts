@@ -6,6 +6,10 @@ declare interface Window {
   MediaRecorder: any
 }
 
+declare module '*.ogg' {
+  export default any
+}
+
 declare module 'highlight.js/lib/highlight' {
   function registerLanguage(lang: string, mol: module)
   function highlightBlock(el: HTMLElement)

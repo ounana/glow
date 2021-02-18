@@ -1,27 +1,10 @@
 import { Button } from "antd";
 import { createRef, PureComponent } from "react";
 
-let levels = [
-  [
-    [50, 50,],
-    [150, 120,],
-  ],
-  [
-    [50, 0,],
-    [100, 100,],
-    [150, 130,],
-  ],
-  [
-    [50, 30,],
-    [100, 100, 2,],
-    [200, 100,],
-  ],
-]
-
-//定义砖块
+//砖块
 class Block {
-  width = 71
-  height = 19
+  width = 70
+  height = 20
   alive = true
   lifes = 2
   constructor(public x: number, public y: number) { }
@@ -30,68 +13,77 @@ class Block {
     if (this.lifes < 1) this.alive = false
   }
   collide(b: Ball) {
+    //两个矩形中心点 x轴距离 <= 两个矩形宽和的一半 &&
+    //两个矩形中心点 y轴距离 <= 两个矩形高和的一半
     const a = this
     const cond1 = [a.x + a.width / 2, a.y + a.height / 2]
     const cond2 = [b.x + b.width / 2, b.y + b.height / 2]
     const cx = Math.abs(cond1[0] - cond2[0])
     const cy = Math.abs(cond1[1] - cond2[1])
-    if (cx <= (a.width / 2 + b.width / 2)) {
-      if (cy <= (a.height / 2 + b.height / 2)) {
-        return true
-      }
+    if (cx <= (a.width + b.width) / 2 && cy <= (a.height + b.height) / 2) {
+      return true
     }
     return false
   }
 }
 
-//定义挡板对象
+//挡板
 class Paddle {
   x: number = 100
-  y: number = 400
+  y: number = 350
   width = 300
   height = 30
   speed = 10
-  move(v: number) {
-    if (v < 0) v = 0
-    if (v > 600 - this.width) {
-      v = 600 - this.width
-    }
-    this.x = v
+  canvasWidth: number
+  constructor(canvasWidth: number) {
+    this.canvasWidth = canvasWidth
   }
   moveLeft() {
-    this.move(this.x - this.speed)
+    let nextX = this.x - this.speed
+    if (nextX < 0) nextX = 0
+    this.x = nextX
   }
   moveRight() {
-    this.move(this.x + this.speed)
+    let nextX = this.x + this.speed
+    if (nextX > this.canvasWidth - this.width) nextX = this.canvasWidth - this.width
+    this.x = nextX
   }
   //定义相撞函数
   collide(b: Ball) {
+    //两个矩形中心点 x轴距离 <= 两个矩形宽和的一半 &&
+    //两个矩形中心点 y轴距离 <= 两个矩形高和的一半
     const a = this
     const cond1 = [a.x + a.width / 2, a.y + a.height / 2]
     const cond2 = [b.x + b.width / 2, b.y + b.height / 2]
     const cx = Math.abs(cond1[0] - cond2[0])
     const cy = Math.abs(cond1[1] - cond2[1])
-    if (cx <= (a.width / 2 + b.width / 2)) {
-      if (cy <= (a.height / 2 + b.height / 2)) {
-        return true
-      }
+    if (cx <= (a.width + b.width) / 2 && cy <= (a.height + b.height) / 2) {
+      return true
     }
     return false
   }
 }
-//定义弹射球
+
+//弹球
 class Ball {
-  width = 50
-  height = 50
   x = 100
   y = 250
-  speedX = 5
-  speedY = 5
+  width = 50
+  height = 50
+  speedX = 3
+  speedY = 3
   fired = false //发射开关
+  lastBump = false //上一次是否发生相撞
+  canvasWidth: number
+  canvasHeight: number
+  constructor(canvasWidth: number, canvasHeight: number) {
+    this.canvasWidth = canvasWidth
+    this.canvasHeight = canvasHeight
+  }
   move() {
     if (!this.fired) return
-    if (this.x < 0 || this.x + this.width > 600) this.speedX *= -1
-    if (this.y < 0 || this.y + this.height > 500) this.speedY *= -1
+    if (this.x < 0 || this.x + this.width > 600) this.reboundX()
+    if (this.y < 0 || this.y + this.height > 400) this.reboundY()
     this.x += this.speedX
     this.y += this.speedY
   }
@@ -106,31 +98,31 @@ class Ball {
   }
 }
 
-class Game {
-  width: number
-  height: number
+class BallGame {
+  width = 600
+  height = 400
   canvas: HTMLCanvasElement
   ctx: CanvasRenderingContext2D
   keydowns: { [key: string]: boolean } = {}
   actions: { [key: string]: () => void } = {}
-  fps = 30
   blocks: Block[] = []
   status: 'start' | 'end' = 'start'
-  constructor(root: Element, public paddle: Paddle, public ball: Ball) {
+  ball: Ball
+  paddle: Paddle
+  levels = [
+    [[50, 50,], [150, 120,]],
+    [[50, 0,], [100, 100,], [150, 130]],
+    [[50, 30,], [100, 100], [200, 100]]
+  ]
+  constructor(root: Element) {
+    this.ball = new Ball(this.width, this.height)
+    this.paddle = new Paddle(this.width)
     this.canvas = document.createElement('canvas')
     root.appendChild(this.canvas)
-    const [width, height] = [600, 500]
-    this.width = width
-    this.height = height
-    this.canvas.width = width
-    this.canvas.height = height
+    this.canvas.width = this.width
+    this.canvas.height = this.height
     this.canvas.style.border = '1px solid'
     this.ctx = this.canvas.getContext('2d')!
-
-    levels[1].forEach(l => {
-      const block = new Block(l[0], l[1])
-      this.blocks.push(block)
-    })
 
     window.addEventListener('keydown', this.onKeyDown)
     window.addEventListener('keyup', this.onKeyUp)
@@ -141,18 +133,31 @@ class Game {
     this.registerAction('d', () => {
       this.paddle.moveRight()
     })
-    this.registerAction('s', () => {
-      this.ball.suspend()
-    })
-    this.runloop()
+    this.frameLoop()
   }
+
   onKeyDown = (evt: KeyboardEvent) => {
     this.keydowns[evt.key] = true
+    if (evt.key === 's') {
+      this.ball.suspend()
+    }
+    const n = parseInt(evt.key)
+    if (!isNaN(n)) {
+      this.switchLevel(n)
+    }
+  }
+  switchLevel = (n: number) => {
+    n -= 1
+    this.blocks = []
+    this.levels[n]?.forEach(l => {
+      const block = new Block(l[0], l[1])
+      this.blocks.push(block)
+    })
   }
   onKeyUp = (evt: KeyboardEvent) => {
     this.keydowns[evt.key] = false
   }
-  over() {
+  close() {
     this.status = 'end'
     window.removeEventListener('keydown', this.onKeyDown)
     window.removeEventListener('keyup', this.onKeyUp)
@@ -160,38 +165,40 @@ class Game {
   registerAction(key: string, callback: () => void) {
     this.actions[key] = callback
   }
-  runloop() {
-    //擦除上一帧
+  frameLoop = () => {
+    //执行按键action
     for (let key in this.keydowns) {
       if (this.keydowns[key]) {
         if (this.actions[key]) this.actions[key]()
       }
     }
     this.update()
-    this.clearCtx()
-    this.draw()
+    this.clearCanvas()
+    this.drawCanvas()
     if (this.status === 'end') return
     //next frame
-    setTimeout(() => {
-      this.runloop()
-    }, 1000 / this.fps)
+    requestAnimationFrame(this.frameLoop)
   }
-
   update() {
     this.ball.move()
     if (this.paddle.collide(this.ball)) {
-      this.ball.reboundY()
-    }
-    this.blocks.forEach(b => {
-      if (b.collide(this.ball)) {
+      //如果上一帧也是被碰撞，下一帧就不改变球的运动方向
+      if (!this.ball.lastBump) {
         this.ball.reboundY()
-        b.kill()
+      }
+      this.ball.lastBump = true
+    } else {
+      this.ball.lastBump = false
+    }
+    this.blocks.forEach(block => {
+      if (block.collide(this.ball)) {
+        this.ball.reboundY()
+        block.kill()
       }
     })
     this.blocks = this.blocks.filter(b => b.alive)
   }
-
-  draw() {
+  drawCanvas() {
     this.drawPaddle()
     this.drawBall()
     this.drawBlock()
@@ -210,32 +217,30 @@ class Game {
     this.ctx.fillStyle = 'red'
     this.ctx.fillRect(this.ball.x, this.ball.y, this.ball.width, this.ball.height)
   }
-  //封装画图功能
-  drawImage(img: HTMLImageElement) {
-    this.ctx.drawImage(img, img.x, img.y)
-  }
-  //封装擦画板功能
-  clearCtx() {
+  //擦除画板
+  clearCanvas() {
     this.ctx.clearRect(0, 0, this.width, this.height)
   }
 }
-export default class GuaGame extends PureComponent {
-  rootDivRef = createRef<HTMLDivElement>()
-  game: Game | null = null
+
+export default class BallGameGraph extends PureComponent {
+  divRef = createRef<HTMLDivElement>()
+  game: BallGame | null = null
   componentDidMount() {
-    const rootDiv = this.rootDivRef.current as HTMLDivElement
-    this.game = new Game(rootDiv, new Paddle(), new Ball())
+    const div = this.divRef.current!
+    this.game = new BallGame(div)
   }
   componentWillUnmount() {
-    this.game?.over()
+    this.game?.close()
   }
-  onEndClick = () => {
-    this.game?.over()
+  onCloseClick = () => {
+    this.game?.close()
   }
   render() {
     return (
-      <div ref={this.rootDivRef}>
-        <Button onClick={this.onEndClick}>END</Button>
+      <div style={{ padding: '30px' }}>
+        <div ref={this.divRef} />
+        <Button onClick={this.onCloseClick}>CLOSE</Button>
       </div>
     )
   }

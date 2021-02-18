@@ -1,9 +1,9 @@
-import GuaGame from "./GuaGame";
+import BallGameGraph from "./BallGameGraph";
 
 export default function Games() {
   return (
-    <div style={{padding: '50px'}}>
-      <GuaGame />
+    <div>
+      <BallGameGraph />
     </div>
   )
 }

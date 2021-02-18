@@ -4,8 +4,8 @@ import Todo from "./Todo"
 function Reduxd() {
   return (
     <div>
-      <Todo/>
-      <LoadData/>
+      <Todo />
+      <LoadData />
     </div>
   )
 }
