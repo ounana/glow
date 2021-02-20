@@ -6,6 +6,7 @@ import {
   Redirect,
 } from "react-router-dom"
 
+const DraftPlan = lazy(() =>import('./draftplan/DraftPlan'))
 const Tensorflow = lazy(() => import('./tensorflow'))
 const Test = lazy(() => import('./test/Test'))
 const Reduxd = lazy(() => import('./reduxd'))
@@ -19,7 +20,7 @@ export default function Router() {
     <BrowserRouter>
       <Suspense fallback={'路由加载中'}>
         <Switch>
-          <Route exact path="/" component={Tensorflow} />
+          <Route exact path="/" component={DraftPlan} />
           <Route path="/tensorflow" component={Tensorflow} />
           <Route path="/test" component={Test} />
           <Route path="/reduxd" component={Reduxd} />

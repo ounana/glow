@@ -1,7 +1,7 @@
 declare interface Window {
   __REDUX_DEVTOOLS_EXTENSION__: undefined | Function
 
-  ClipperLib: any,
+  ClipperLib: any
 
   MediaRecorder: any
 }
