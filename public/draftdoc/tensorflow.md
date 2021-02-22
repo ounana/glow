@@ -96,4 +96,3 @@ tf.linspace(0, 9, 10).print();
 const x = tf.tensor([1, 2])
 x.clone().print()
 ```
-
