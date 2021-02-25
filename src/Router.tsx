@@ -3,10 +3,10 @@ import {
   BrowserRouter,
   Route,
   Switch,
-  Redirect,
+  Redirect
 } from "react-router-dom"
 
-const DraftPlan = lazy(() =>import('./draftplan/DraftPlan'))
+const DraftPlan = lazy(() => import('./draftplan/DraftPlan'))
 const Tensorflow = lazy(() => import('./tensorflow'))
 const Test = lazy(() => import('./test/Test'))
 const Reduxd = lazy(() => import('./reduxd'))
@@ -17,11 +17,13 @@ const DuckShooter = lazy(() => import('./duckshooter'))
 
 export default function Router() {
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      basename='/glow'
+    >
       <Suspense fallback={'路由加载中'}>
         <Switch>
-          <Route exact path="/" component={DraftPlan} />
-          <Route path="/tensorflow" component={Tensorflow} />
+          <Route exact path={"/"} component={DraftPlan} />
+          <Route path={"/tensorflow"} component={Tensorflow} />
           <Route path="/test" component={Test} />
           <Route path="/reduxd" component={Reduxd} />
           <Route path="/paperd" component={Paperd} />
