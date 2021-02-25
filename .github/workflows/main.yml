@@ -1,4 +1,4 @@
-name: NICEST
+name: GLOW
 on:
   push:
     branches:
@@ -6,6 +6,12 @@ on:
 jobs:
   DOC-DEPLOY:
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@master
+    - uses: actions/checkout@v2
+      with:
+        ref: main
+    - uses: ./.github/action-deploy-doc
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        BRANCH: gh-pages
+        FOLDER: build
+        BUILD_SCRIPT: npm install && npm run doc
