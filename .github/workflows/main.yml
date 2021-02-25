@@ -7,10 +7,11 @@ jobs:
   DOC-DEPLOY:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-      with:
-        ref: main
-    - uses: ./.github/action-deploy-doc
+    - name: Checkout
+      uses: actions/checkout@master
+
+    - name: Run build
+      uses: ./.github/action-deploy-doc
       env:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         BRANCH: gh-pages
