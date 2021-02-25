@@ -1,2 +1,0 @@
-(this.webpackJsonpglow=this.webpackJsonpglow||[]).push([[25],{544:function(t,n,e){"use strict";e.r(n),e.d(n,"default",(function(){return c}));var s=e(4);function c(){return Object(s.jsx)("div",{children:"Test"})}}}]);
-//# sourceMappingURL=25.761620e7.chunk.js.map
