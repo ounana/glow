@@ -1,0 +1,1 @@
+{"version":3,"sources":["test/Test.tsx"],"names":["Test"],"mappings":"yJACe,SAASA,IACtB,OACE","file":"static/js/25.761620e7.chunk.js","sourcesContent":["\r\nexport default function Test() {\r\n  return (\r\n    <div>Test</div>\r\n  )\r\n}"],"sourceRoot":""}
