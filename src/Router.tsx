@@ -18,7 +18,7 @@ const DuckShooter = lazy(() => import('./duckshooter'))
 export default function Router() {
   return (
     <BrowserRouter
-      basename='/glow'
+      basename={'/glow'}
     >
       <Suspense fallback={'路由加载中'}>
         <Switch>
