@@ -5,8 +5,8 @@ LABEL "com.github.actions.description"="This action will handle the building and
 LABEL "com.github.actions.icon"="git-commit"
 LABEL "com.github.actions.color"="orange"
 
-LABEL "repository"="https://github.com/ounana/nicest"
-LABEL "homepage"="https://ounana.github.io/nicest/"
+LABEL "repository"="https://github.com/ounana/glow"
+LABEL "homepage"="https://ounana.github.io/glow/"
 LABEL "maintainer"="ounana <771565119@qq.com>"
 
 ADD entrypoint.sh /entrypoint.sh
