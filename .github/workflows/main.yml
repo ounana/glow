@@ -2,7 +2,7 @@ name: NICEST
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   DOC-DEPLOY:
     runs-on: ubuntu-latest
