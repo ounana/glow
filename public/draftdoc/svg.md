@@ -1,7 +1,7 @@
 # svg
 
-## 通用
-|属性|值|
+## 通用属性
+|attribute|value|
 |---|---|
 |fill|填充颜色 (rgb、颜色、十六进制、none)|
 |fill-opacity|填充透明度 (0-1)|
@@ -15,31 +15,29 @@
 
 
 ## `<svg>`
-|属性|值|
-|:---|:---|
+|attribute|value|
+|---|---|
 |xmlns|命名空间|
 |version|版本号|
 |width|画布宽度|
 |height|画布高度|
-|viewBox|[min-x, min-y, width, height] </br>指定一个矩形区域映射到给定的元素，然后通过修改svg尺寸，可调整大小
-
-
+|viewBox|[min-x, min-y, width, height] <br/>指定一个矩形区域映射到给定的元素，然后通过修改svg尺寸，可调整大小|
 
 ## `<circle>`
-|属性|值|
+|attribute<img width=100/>|value|
 |:---|:---|
 |cx|x坐标|
 |cy|y坐标|
 |r|半径|
 
-## `<ellipse>`
-|属性|值|
+## `<ellipse>`椭圆
+|attribute<img width=100/>|value|
 |:---|:---|
 |rx x方向半径
 |ry y方向半径
 
 ## `<rect>`
-|属性|值|
+|attribute<img width=100/>|value|
 |:---|:---|
 |x|x坐标|
 |y|y坐标|
@@ -49,7 +47,7 @@
 |ry|y方向圆角|
 
 ## `<line>`
-|属性|值|
+|attribute<img width=100/>|value|
 |:---|:---|
 |x1|起点x坐标|
 |y1|起点y坐标|
@@ -77,7 +75,7 @@ rx ry 旋转角度 大弧(1)还是小弧(0) 顺时针(1)还是逆时针(0) x y�
 
 
 ## `<text>`
-|属性|值|
+|attribute<img width=100/>|value|
 |---|---|
 |x|x坐标|
 |y|y坐标|
@@ -86,14 +84,13 @@ rx ry 旋转角度 大弧(1)还是小弧(0) 顺时针(1)还是逆时针(0) x y�
 |transform|旋转-rotate(30 20,40)|
 
 ## `<textPath>`
-|属性|值|
+|attribute<img width=100/>|value|
 |---|---|
 |xlink:href|链接路径id|
 
-
 ## `<g>`
 (把一些图形放在一起，可统一样式)
-|属性|值|
+|attribute<img width=100/>|value|
 |:---|:---|
 |font|字体类型|
 |font-size|字体大小|
@@ -116,15 +113,14 @@ id:滤镜的唯一名称
 |stop-color|偏移颜色|
 |stop-opacity|偏移透明度|
 
->水平渐变
-x1="0%" y1="0%" x2="100%" y2="0%"
->垂直
-x1="0%" y1="0%" x2="0%" y2="100%"
+水平渐变：x1="0%" y1="0%" x2="100%" y2="0%"
+
+垂直：x1="0%" y1="0%" x2="0%" y2="100%"
 
 
 ## 其他标签
 |标签|用途|
 |:---|:---|
-|<defs>|定义后续需要使用的引用图形|
-|<tspan>|子文本标签|
-|<a>|链接标签 -xlink:href|
+|`<defs>`|定义后续需要使用的引用图形|
+|`<tspan>`|子文本标签|
+|`<a>`|链接标签 -xlink:href|

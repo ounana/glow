@@ -5,3 +5,8 @@
 .dp img {
   max-width: 100%;
 }
+
+.dp table td,th {
+  border: 1px solid;
+  padding: 3px;
+}

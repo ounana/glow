@@ -1,0 +1,11 @@
+name: NICEST
+on:
+  push:
+    branches:
+      - master
+jobs:
+  DOC-DEPLOY:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@master
