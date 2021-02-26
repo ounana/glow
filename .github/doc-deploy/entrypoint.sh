@@ -25,19 +25,16 @@ case "$FOLDER" in /*|./*)
   exit 1
 esac
 
-git version && \
-git branch && \
 
-# 安装git
-apt-get update && \
-apt-get install -y git && \
-git version && \
-
+# # 安装git
+# apt-get update && \
+# apt-get install -y git && \
+echo $GITHUB_WORKSPACE && \
 # Directs the action to the the Github workspace.
 cd $GITHUB_WORKSPACE && \
-git branch && \
-# Configures Git.
-git init && \
+
+# 配置git
+# git init && \
 git config --global user.email 771565119@qq.com && \
 git config --global user.name ounana && \
 
@@ -66,7 +63,7 @@ fi
 
 # 切换到当前分支
 git checkout main && \
-
+ls && \
 # # 执行编译
 # echo "Running build scripts... $BUILD_SCRIPT" && \
 # eval "$BUILD_SCRIPT" && \
