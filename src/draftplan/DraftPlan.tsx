@@ -12,7 +12,7 @@ export default function DraftPlan() {
     const div = divRef.current!
     let innerHTML = '文章不存在！'
     fetch(dpath).then(res => res.text()).then(res => {
-      if (res.slice(0, 15) !== '<!DOCTYPE html>') {
+      if (res.slice(0, 15).toUpperCase() !== '<!DOCTYPE HTML>') {
         innerHTML = marked(res)
       }
       div.innerHTML = innerHTML
