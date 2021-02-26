@@ -37,8 +37,8 @@ REPOSITORY_PATH="https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" &&
 
 # Check whether the remote branch exists
 # Count the number of output lines
-LINES=`git ls-remote --heads origin $BRANCH | wc -l`
-if [ LINES -eq 0 ];
+LINES=`git ls-remote --heads origin $BRANCH | wc -l` && \
+if [ $LINES -eq 0 ];
 then
   echo "Creating remote branch ${BRANCH} as it doesn't exist..."
   git checkout main && \
