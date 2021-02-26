@@ -25,16 +25,16 @@ case "$FOLDER" in /*|./*)
   exit 1
 esac
 
+git branch -a \
+git config user.name  \
+git config user.email \
+echo $ACCESS_TOKEN \
+echo $GITHUB_REPOSITORY \
+echo $GITHUB_WORKSPACE \
 
-git version \
-
-git status \
-
-git branch \
-
-# Installs Git and jq.
-apt-get update && \
-apt-get install -y git && \
+# # 安装git
+# apt-get update && \
+# apt-get install -y git && \
 
 # Directs the action to the the Github workspace.
 cd $GITHUB_WORKSPACE && \
@@ -44,9 +44,9 @@ git init && \
 git config --global user.email 771565119@qq.com && \
 git config --global user.name ounana && \
 
+# 使用token访问github仓库
+REPOSITORY_PATH="https://${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
 
-# ## Initializes the repository path using the access token.
-# REPOSITORY_PATH="https://${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
 
 # # Checks to see if the remote exists prior to deploying.
 # # If the branch doesn't exist it gets created here as an orphan.
@@ -84,4 +84,5 @@ git config --global user.name ounana && \
 # git commit -m "Deploying to ${BRANCH} from ${BASE_BRANCH:-main} ${GITHUB_SHA}" --quiet && \
 # # 获取docs文件夹的hash值，只提交docs文件夹到branch分支
 # git push $REPOSITORY_PATH `git subtree split --prefix $FOLDER ${BASE_BRANCH:-main}`:$BRANCH --force && \
-# echo "Deployment succesful!"
+
+echo "Deployment succesful!"
