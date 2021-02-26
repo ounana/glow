@@ -32,14 +32,24 @@ ww=`git subtree split --prefix folder main`
 ```shell
 function pause(){
   read -n 1 -p "$*" INP
-  if [ $INP != '' ] ; then
-    echo -ne '\b \n'
-  fi
+  if [ $INP != '' ];
+    then
+      echo -ne '\b \n'
+    fi
 }
 
 pause "1221"
 ```
+统计执行结果输出行数
+`git ls-remote --heads origin $BRANCH | wc -l`
 
+
+$?上一个程序的退出状态，-ne 不等
+if [ $? -ne 0 ];
+  then
+    echo "create remote branch failed..."
+    exit 1
+  fi
 
 
 # ssh

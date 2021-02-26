@@ -25,7 +25,7 @@ case "$FOLDER" in /*|./*)
   exit 1
 esac
 
-# actions/checkout@v2 会将代码检出到$GITHUB_WORKSPACE目录下
+# actions/checkout@v2 -> chekout code to $GITHUB_WORKSPACE
 cd $GITHUB_WORKSPACE && \
 
 # configure git
@@ -36,8 +36,9 @@ git config --global user.name ounana && \
 REPOSITORY_PATH="https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
 
 # Check whether the remote branch exists
-# wc -l 统计输出行数 -eq 对比
-if [ "$(git ls-remote --heads "$REPOSITORY_PATH" "$BRANCH" | wc -l)" -eq 0 ];
+# Count the number of output lines
+LINES=`git ls-remote --heads origin $BRANCH | wc -l`
+if [ LINES -eq 0 ];
 then
   echo "Creating remote branch ${BRANCH} as it doesn't exist..."
   git checkout main && \
@@ -47,7 +48,7 @@ then
   git add README.md && \
   git commit -m "Initial ${BRANCH} commit" && \
   git push $REPOSITORY_PATH $BRANCH
-  # 上一条命令的执行失败则退出
+  # Check program exit status
   if [ $? -ne 0 ];
   then
     echo "create remote branch failed..."
