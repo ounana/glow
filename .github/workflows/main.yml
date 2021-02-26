@@ -13,7 +13,7 @@ jobs:
       - name: Run build
         uses: ./.github/doc-deploy
         env:
-          ACCESS_TOKEN: ${{ secrets.MY_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
           BRANCH: gh-pages
           FOLDER: build
           BUILD_SCRIPT: npm install && npm run build

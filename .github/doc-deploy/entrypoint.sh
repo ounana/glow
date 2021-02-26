@@ -2,7 +2,7 @@
 
 set -e
 
-if [ -z "$ACCESS_TOKEN" ]
+if [ -z "$GITHUB_TOKEN" ]
 then
   echo "You must provide the action with a GitHub Personal Access Token secret in order to deploy."
   exit 1
@@ -25,23 +25,19 @@ case "$FOLDER" in /*|./*)
   exit 1
 esac
 
-# # 安装git
+# 安装git 这里无须安装git
 # apt-get update && \
 # apt-get install -y git && \
 
-echo $GITHUB_WORKSPACE && \
-ls && \
-
-# 进入Github工作区
+# actions/checkout@v2 会将代码检出到$GITHUB_WORKSPACE目录下
 cd $GITHUB_WORKSPACE && \
 
 # 配置git
-# git init && \
 git config --global user.email 771565119@qq.com && \
 git config --global user.name ounana && \
 
 # 使用token访问github仓库
-REPOSITORY_PATH="https://${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
+REPOSITORY_PATH="https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
 
 # 检查远程分支是否存在，如果分支不存在 将创建一个新的分支
 # wc -l 统计输出行数 -eq 对比
@@ -65,12 +61,14 @@ fi
 
 # 切换到当前分支
 git checkout main && \
-ls && \
-# # 执行编译
+echo $GITHUB_SHA && \
+
+
+# 执行编译
 # echo "Running build scripts... $BUILD_SCRIPT" && \
 # eval "$BUILD_SCRIPT" && \
 
-# # 提交到github
+# 提交到github
 # echo "Deploying to GitHub..." && \
 # git add -f $FOLDER && \
 
