@@ -5,7 +5,7 @@ on:
       - main
 jobs:
   DOC-DEPLOY:
-    name: doc-deploy
+    name: DOC-DEPLOY
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
