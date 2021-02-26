@@ -24,13 +24,7 @@ case "$FOLDER" in /*|./*)
   echo "The deployment folder cannot be prefixed with '/' or './'. Instead reference the folder name directly."
   exit 1
 esac
-git version && \
-git branch && \
-git config user.name  && \
-git config user.email && \
-echo $ACCESS_TOKEN && \
-echo $GITHUB_REPOSITORY && \
-echo $GITHUB_WORKSPACE && \
+
 
 # # 安装git
 # apt-get update && \
@@ -47,37 +41,35 @@ git config --global user.name ounana && \
 # 使用token访问github仓库
 REPOSITORY_PATH="https://${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
 
+# 检查远程分支是否存在，如果分支不存在 将创建一个新的分支
+# wc -l 统计输出行数 -eq 对比
+if [ "$(git ls-remote --heads "$REPOSITORY_PATH" "$BRANCH" | wc -l)" -eq 0 ];
+then
+  echo "Creating remote branch ${BRANCH} as it doesn't exist..."
+  git checkout "${BASE_BRANCH:-main}" && \
+  git checkout --orphan $BRANCH && \
+  git rm -rf . && \
+  touch README.md && \
+  git add README.md && \
+  git commit -m "Initial ${BRANCH} commit" && \
+  git push $REPOSITORY_PATH $BRANCH
+  # 上一条命令的执行失败则退出
+  if [ $? -ne 0 ];
+  then
+    echo "create remote branch failed..."
+    exit 1
+  fi
+fi
 
-# # Checks to see if the remote exists prior to deploying.
-# # If the branch doesn't exist it gets created here as an orphan.
-# # 统计输出行数 wc -l
-# # -eq 对比相等的意思
-# if [ "$(git ls-remote --heads "$REPOSITORY_PATH" "$BRANCH" | wc -l)" -eq 0 ];
-# then
-#   echo "Creating remote branch ${BRANCH} as it doesn't exist..."
-#   git checkout "${BASE_BRANCH:-main}" && \
-#   git checkout --orphan $BRANCH && \
-#   git rm -rf . && \
-#   touch README.md && \
-#   git add README.md && \
-#   git commit -m "Initial ${BRANCH} commit" && \
-#   git push $REPOSITORY_PATH $BRANCH
-#   # 上一条命令的执行失败则退出
-#   if [ $? -ne 0 ];
-#   then
-#     echo "create remote branch failed..."
-#     exit 1
-#   fi
-# fi
+# 切换到当前分支
+echo $BASE_BRANCH && \
+git checkout "${BASE_BRANCH:-main}" && \
 
-# # Checks out the base branch to begin the deploy process.
-# git checkout "${BASE_BRANCH:-main}" && \
-
-# # Builds the project if a build script is provided.
+# # 执行编译
 # echo "Running build scripts... $BUILD_SCRIPT" && \
 # eval "$BUILD_SCRIPT" && \
 
-# # Commits the data to Github.
+# # 提交到github
 # echo "Deploying to GitHub..." && \
 # git add -f $FOLDER && \
 
