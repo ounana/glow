@@ -5,10 +5,15 @@ on:
       - main
 jobs:
   DOC-DEPLOY:
+    name: doc deploy
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@master
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: echo --
+        run: echo hello world
+        run: git branch
 
     # - name: Run build
     #   uses: ./.github/action-deploy-doc
