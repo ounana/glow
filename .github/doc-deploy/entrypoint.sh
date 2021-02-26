@@ -24,8 +24,8 @@ case "$FOLDER" in /*|./*)
   echo "The deployment folder cannot be prefixed with '/' or './'. Instead reference the folder name directly."
   exit 1
 esac
-
-git branch -a \
+git version \
+git branch \
 git config user.name  \
 git config user.email \
 echo $ACCESS_TOKEN \
