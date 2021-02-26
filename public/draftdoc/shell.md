@@ -20,6 +20,38 @@ ps -ef //查看进程
 kill -9 [pid] //杀死进程
 
 
+## 语法
+
+&& \ 表示前一条命令执行成功 才会执行后续命令
+
+
+赋值变量的时候 等号两边不能有空格，脚本输出必须用反引号
+ww=`git subtree split --prefix folder main`
+
+实现暂停
+```shell
+function pause(){
+  read -n 1 -p "$*" INP
+  if [ $INP != '' ];
+    then
+      echo -ne '\b \n'
+    fi
+}
+
+pause "1221"
+```
+统计执行结果输出行数
+`git ls-remote --heads origin $BRANCH | wc -l`
+
+
+$?上一个程序的退出状态，-ne 不等
+if [ $? -ne 0 ];
+  then
+    echo "create remote branch failed..."
+    exit 1
+  fi
+
+
 # ssh
 
 * 登陆

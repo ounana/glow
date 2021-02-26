@@ -2,7 +2,7 @@
 
 set -e
 
-if [ -z "$ACCESS_TOKEN" ]
+if [ -z "$GITHUB_TOKEN" ]
 then
   echo "You must provide the action with a GitHub Personal Access Token secret in order to deploy."
   exit 1
@@ -25,36 +25,30 @@ case "$FOLDER" in /*|./*)
   exit 1
 esac
 
-# Installs Git and jq.
-apt-get update && \
-apt-get install -y git && \
-
-# Directs the action to the the Github workspace.
+# actions/checkout@v2 -> chekout code to $GITHUB_WORKSPACE
 cd $GITHUB_WORKSPACE && \
 
-# Configures Git.
-git init && \
+# configure git
 git config --global user.email 771565119@qq.com && \
 git config --global user.name ounana && \
 
-## Initializes the repository path using the access token.
-REPOSITORY_PATH="https://${ACCESS_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
+# configure github path
+REPOSITORY_PATH="https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
 
-# Checks to see if the remote exists prior to deploying.
-# If the branch doesn't exist it gets created here as an orphan.
-# 统计输出行数 wc -l
-# -eq 对比相等的意思
-if [ "$(git ls-remote --heads "$REPOSITORY_PATH" "$BRANCH" | wc -l)" -eq 0 ];
+# Check whether the remote branch exists
+# Count the number of output lines
+LINES=`git ls-remote --heads origin $BRANCH | wc -l` && \
+if [ $LINES -eq 0 ];
 then
   echo "Creating remote branch ${BRANCH} as it doesn't exist..."
-  git checkout "${BASE_BRANCH:-main}" && \
+  git checkout main && \
   git checkout --orphan $BRANCH && \
   git rm -rf . && \
   touch README.md && \
   git add README.md && \
   git commit -m "Initial ${BRANCH} commit" && \
   git push $REPOSITORY_PATH $BRANCH
-  # 上一条命令的执行失败则退出
+  # Check program exit status
   if [ $? -ne 0 ];
   then
     echo "create remote branch failed..."
@@ -62,18 +56,22 @@ then
   fi
 fi
 
-# Checks out the base branch to begin the deploy process.
-git checkout "${BASE_BRANCH:-main}" && \
+# Checkout in main brach
+git checkout main && \
 
-# Builds the project if a build script is provided.
+# Run build scripts
 echo "Running build scripts... $BUILD_SCRIPT" && \
 eval "$BUILD_SCRIPT" && \
 
 # Commits the data to Github.
 echo "Deploying to GitHub..." && \
 git add -f $FOLDER && \
+git commit -m "Deploying to ${BRANCH} from main:build ${GITHUB_SHA}" --quiet && \
 
-git commit -m "Deploying to ${BRANCH} from ${BASE_BRANCH:-main} ${GITHUB_SHA}" --quiet && \
-# 获取docs文件夹的hash值，只提交docs文件夹到branch分支
-git push $REPOSITORY_PATH `git subtree split --prefix $FOLDER ${BASE_BRANCH:-main}`:$BRANCH --force && \
+# get build folder hash code
+FOLDER_SHA=`git subtree split --prefix $FOLDER main` && \
+
+# commits to github:brach
+git push $REPOSITORY_PATH $FOLDER_SHA:$BRANCH --force && \
+
 echo "Deployment succesful!"
