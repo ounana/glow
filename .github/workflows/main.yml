@@ -8,15 +8,12 @@ jobs:
     name: doc-deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
-      - name: echo --
-        run: git branch -a
-
-      # - name: Run build
-      #   uses: ./.github/action-deploy-doc
-      #   env:
-      #     ACCESS_TOKEN: ${{ secrets.MY_TOKEN }}
-      #     BRANCH: gh-pages
-      #     FOLDER: build
-      #     BUILD_SCRIPT: npm install && npm run build
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Run build
+        uses: ./.github/doc-deploy
+        env:
+          ACCESS_TOKEN: ${{ secrets.MY_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build
+          BUILD_SCRIPT: npm install && npm run build
