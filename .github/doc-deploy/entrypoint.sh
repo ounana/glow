@@ -25,12 +25,14 @@ case "$FOLDER" in /*|./*)
   exit 1
 esac
 
-
 # # 安装git
 # apt-get update && \
 # apt-get install -y git && \
+
 echo $GITHUB_WORKSPACE && \
-# Directs the action to the the Github workspace.
+ls && \
+
+# 进入Github工作区
 cd $GITHUB_WORKSPACE && \
 
 # 配置git
