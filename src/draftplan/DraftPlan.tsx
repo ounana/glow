@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react"
 import './index.css'
 import marked from 'marked'
 import { useLocation } from "react-router-dom"
-const DOC_PATH = '/draftdoc/'
+const DOC_PATH = 'draftdoc/'
 
 export default function DraftPlan() {
   const divRef = useRef<HTMLDivElement>(null)
