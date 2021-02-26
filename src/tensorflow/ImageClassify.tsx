@@ -87,7 +87,9 @@ export default class ImageClassify extends PureComponent {
     const xs = resized.as4D(1, 224, 224, 3)
     const mxs = this.mobilenet.predict(xs) as tf.Tensor4D
     const prediction = this.model.predict(mxs) as tf.Tensor
-    console.log(prediction.argMax(1).dataSync())
+    
+    let n = prediction.argMax(1).dataSync()[0]
+    console.log(SHAPE[n])
   }
   keepXs = (cxs: tf.Tensor4D) => {
     if (this.xs) {

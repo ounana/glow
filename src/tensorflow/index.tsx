@@ -1,9 +1,9 @@
-import MnistTrain from './MnistTrain'
+import ImageClassify from './ImageClassify'
 
 export default function Tensorflowd() {
   return(
     <div>
-      <MnistTrain/>
+      <ImageClassify/>
     </div>
   )
 }
