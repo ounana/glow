@@ -26,7 +26,7 @@ export function loadData(params: string) {
   setTimeout(async () => {
     try {
       const response = await fetch(
-        process.env.REACT_APP_URL + '/data.json'
+        process.env.REACT_APP_BASE_URL + '/data.json'
       ).then(res => res.json())
       store.dispatch({
         type: ACTION.FETCH_DATA_SUCCESS,

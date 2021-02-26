@@ -17,9 +17,7 @@ const DuckShooter = lazy(() => import('./duckshooter'))
 
 export default function Router() {
   return (
-    <HashRouter
-      basename={'/glow'}
-    >
+    <HashRouter>
       <Suspense fallback={'路由加载中'}>
         <Switch>
           <Route exact path={"/"} component={DraftPlan} />
