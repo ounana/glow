@@ -25,26 +25,22 @@ case "$FOLDER" in /*|./*)
   exit 1
 esac
 
-# 安装git 这里无须安装git
-# apt-get update && \
-# apt-get install -y git && \
-
 # actions/checkout@v2 会将代码检出到$GITHUB_WORKSPACE目录下
 cd $GITHUB_WORKSPACE && \
 
-# 配置git
+# configure git
 git config --global user.email 771565119@qq.com && \
 git config --global user.name ounana && \
 
-# 使用token访问github仓库
+# configure github path
 REPOSITORY_PATH="https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" && \
 
-# 检查远程分支是否存在，如果分支不存在 将创建一个新的分支
+# Check whether the remote branch exists
 # wc -l 统计输出行数 -eq 对比
 if [ "$(git ls-remote --heads "$REPOSITORY_PATH" "$BRANCH" | wc -l)" -eq 0 ];
 then
   echo "Creating remote branch ${BRANCH} as it doesn't exist..."
-  git checkout "${BASE_BRANCH:-main}" && \
+  git checkout main && \
   git checkout --orphan $BRANCH && \
   git rm -rf . && \
   touch README.md && \
@@ -59,22 +55,22 @@ then
   fi
 fi
 
-# 切换到当前分支
+# Checkout in main brach
 git checkout main && \
 
-# 执行编译
+# Run build scripts
 echo "Running build scripts... $BUILD_SCRIPT" && \
 eval "$BUILD_SCRIPT" && \
 
-# 将编译结果提交到本地git库
+# Commits the data to Github.
 echo "Deploying to GitHub..." && \
 git add -f $FOLDER && \
-git commit -m "Deploying to ${BRANCH} from main:build ${GITHUB_SHA}" && \
+git commit -m "Deploying to ${BRANCH} from main:build ${GITHUB_SHA}" --quiet && \
 
-# build文件夹的hash地址
+# get build folder hash code
 FOLDER_SHA=`git subtree split --prefix $FOLDER main` && \
 
-# 提交到github远端分支
+# commits to github:brach
 git push $REPOSITORY_PATH $FOLDER_SHA:$BRANCH --force && \
 
 echo "Deployment succesful!"

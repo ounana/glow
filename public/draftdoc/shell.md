@@ -28,7 +28,17 @@ kill -9 [pid] //杀死进程
 赋值变量的时候 等号两边不能有空格，脚本输出必须用反引号
 ww=`git subtree split --prefix folder main`
 
+实现暂停
+```shell
+function pause(){
+  read -n 1 -p "$*" INP
+  if [ $INP != '' ] ; then
+    echo -ne '\b \n'
+  fi
+}
 
+pause "1221"
+```
 
 
 
