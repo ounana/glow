@@ -2,7 +2,6 @@
   "name": "glow",
   "version": "0.1.1",
   "private": true,
-  "homepage": "https://ounana.github.io/glow/",
   "dependencies": {
     "@antv/g2": "^4.1.7",
     "@tensorflow/tfjs": "^2.8.5",
