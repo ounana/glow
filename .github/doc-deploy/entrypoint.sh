@@ -62,7 +62,9 @@ then
 fi
 
 # 切换到当前分支
+echo "hello world1" && \
 echo $BASE_BRANCH && \
+echo "hello world2" && \
 git checkout "${BASE_BRANCH:-main}" && \
 
 # # 执行编译
