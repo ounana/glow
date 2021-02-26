@@ -1,9 +1,9 @@
 import { lazy, Suspense } from 'react';
 import {
-  BrowserRouter,
   Route,
   Switch,
-  Redirect
+  Redirect,
+  HashRouter
 } from "react-router-dom"
 
 const DraftPlan = lazy(() => import('./draftplan/DraftPlan'))
@@ -17,7 +17,7 @@ const DuckShooter = lazy(() => import('./duckshooter'))
 
 export default function Router() {
   return (
-    <BrowserRouter
+    <HashRouter
       basename={'/glow'}
     >
       <Suspense fallback={'路由加载中'}>
@@ -34,6 +34,6 @@ export default function Router() {
           <Redirect from="*" to="/tensorflow"></Redirect>
         </Switch>
       </Suspense>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
