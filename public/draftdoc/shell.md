@@ -20,6 +20,18 @@ ps -ef //查看进程
 kill -9 [pid] //杀死进程
 
 
+## 语法
+
+&& \ 表示前一条命令执行成功 才会执行后续命令
+
+
+赋值变量的时候 等号两边不能有空格，脚本输出必须用反引号
+ww=`git subtree split --prefix folder main`
+
+
+
+
+
 # ssh
 
 * 登陆

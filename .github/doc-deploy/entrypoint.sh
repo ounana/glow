@@ -61,19 +61,20 @@ fi
 
 # 切换到当前分支
 git checkout main && \
-echo $GITHUB_SHA && \
-
 
 # 执行编译
-# echo "Running build scripts... $BUILD_SCRIPT" && \
-# eval "$BUILD_SCRIPT" && \
+echo "Running build scripts... $BUILD_SCRIPT" && \
+eval "$BUILD_SCRIPT" && \
 
-# 提交到github
-# echo "Deploying to GitHub..." && \
-# git add -f $FOLDER && \
+# 将编译结果提交到本地git库
+echo "Deploying to GitHub..." && \
+git add -f $FOLDER && \
+git commit -m "Deploying to ${BRANCH} from main:build ${GITHUB_SHA}" && \
 
-# git commit -m "Deploying to ${BRANCH} from ${BASE_BRANCH:-main} ${GITHUB_SHA}" --quiet && \
-# # 获取docs文件夹的hash值，只提交docs文件夹到branch分支
-# git push $REPOSITORY_PATH `git subtree split --prefix $FOLDER ${BASE_BRANCH:-main}`:$BRANCH --force && \
+# build文件夹的hash地址
+FOLDER_SHA=`git subtree split --prefix $FOLDER main` && \
+
+# 提交到github远端分支
+git push $REPOSITORY_PATH $FOLDER_SHA:$BRANCH --force && \
 
 echo "Deployment succesful!"
