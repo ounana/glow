@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       - name: echo --
-        run: echo hello world
+        run: git branch -a
 
       # - name: Run build
       #   uses: ./.github/action-deploy-doc
