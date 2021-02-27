@@ -39,9 +39,9 @@ git commit -m [注释]
 - git branch -a 列出本地分支和远程分支
 
 ### 创建
-- git branch [branch_name]
-- git checkout -b [br] 拷贝一个当前分支的副本
-- git checkout --orphan [分支名] //创建孤立分支，没有任何提交
+- git branch [branch_name] 创建当前分支的副本
+- git checkout -b [branch_name] 创建当前分支的副本，并切换到副本分支
+- git checkout --orphan [branch_name] 创建孤立分支，没有任何历史提交信息
 
 ### 切换
 - HEAD 当前指针位置，版本位置
