@@ -1,8 +1,8 @@
 # GIT
 
-## 基础配置
+## 全局配置
 ### 查看
-- git config --list
+- git config --list 列出所有配置信息
 - git config user.name
 - git config user.email
 
@@ -17,6 +17,7 @@
 
 ### 克隆远程仓库
 - git clone [远程库地址]
+- git clone [远程库地址] [自定义文件夹名]
 
 ## 本地提交
 1. 添加到暂存区
@@ -37,6 +38,7 @@ git commit -m [注释]
 ### 查看
 - git branch 列出本地分支
 - git branch -a 列出本地分支和远程分支
+- git remote update origin -p 更新远程分支列表，当远程有新的分支需要跟新的时候
 
 ### 创建
 - git branch [branch_name] 创建当前分支的副本
@@ -44,63 +46,42 @@ git commit -m [注释]
 - git checkout --orphan [branch_name] 创建孤立分支，没有任何历史提交信息
 
 ### 切换
-- HEAD 当前指针位置，版本位置
-- master 主分支
-- git checkout [分支名]
-- git checkout master //回到主分支
+- git checkout HEAD 到当前指针位置
+- git checkout [main/master] 到主分支
+- git checkout [branch_name] 切换分支
+- git checkout [log_hash信息] 回滚到历史位置
 
-### 定位、回滚 HEAD
-
-- git checkout [身份信息]
-
-### 合并 把谁的分支合并到当前自己的分支，将分支与当前分支合并
-
-- git merge [分支名]
+### 合并
+把其他分支合并到当前自己的分支，将分支与当前分支合并
+- git merge [branch_name]
+- git pull origin [branch_name] 将远端分支拉到本地当前分支
 
 ### 删除
+- git push origin --delete [branch_name] 删除远程分支
+- git branch -d [branch_name] 删除本地分支
 
-- git push origin --delete [分支名] //删除远程分支
-- git branch -d [分支名] //删除本地分支
-
-### 多人开发模式：
-
-- 从主分支创建自己的分支，然后修改自己的分支，最后合并到主分支
-
-### 更新远程分支列表
-
-- git remote update origin -p
-
-  
+### 常用多人开发模式
+1. 克隆远程仓库到本地
+2. 基于开发分支（develop-branch）创建一个自己的分支
+3. 然后基于自己的分支开发修改，提交到本地
+4. 切换到开发分支，将自己的分支合并到开发分支
+5. 将开发分支推送到远端，最后合并到主分支
 
 ## 远程仓库
-
+origin 是默认的远程库名
 ### 查看
-  git remote 
-  git remote -v //显示详细信息
+- git remote 列出远程仓库
+- git remote -v 显示详细信息
 
-### 添加
+### 添加/修改
+- git remote add [远程库名] [远程库地址]
+- git remote set-url [远程库名] [远程库地址]
 
-  git remote add [远程库名] [远程库地址]
-
-### 修改
-
-  git remote set-url [远程库名] [远程库地址]
-
-### 推
-
-  git push -u [远程库名] [分支名]
-  git push
-
-### 拉
-
-  git pull
-
-### 克隆
-
-  git clone [远程库地址]
-  git clone [远程库地址] [自定义文件夹]
-
-* origin 默认的远程库名
+### 推/拉
+- git push
+- git push orogin [branch_name]
+- git pull
+- git pull origin [branch_name]
 
 ## SSH公钥
 ### 为什么需要ssh公钥？
