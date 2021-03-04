@@ -55,7 +55,7 @@ Tom Mitchell (1998): 计算机程序从经验E中学习，解决某一任务T进
 
 常用的损失函数有：
 - 绝对值损失函数：L(Y, F(x)) = |Y - F(x)|
-- 平方损失函数：<br/>![avatar](./draftdoc/images/loss.png)<br/>
+- 平方损失函数：<br/>![avatar](./glow/draftdoc/images/loss.png)<br/>
 其中m表示样本个数，hθ(x[i])表示输出函数，y[i]表示对应标签。
 
 ## 梯度下降

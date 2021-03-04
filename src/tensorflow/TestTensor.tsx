@@ -1,4 +1,4 @@
-import { PureComponent } from "react";
+import { createRef, PureComponent } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { data } from './data'
 
@@ -20,11 +20,10 @@ import { data } from './data'
  */
 
 export default class TestTensor extends PureComponent {
-  componentDidMount() {
+  testimgRef = createRef<HTMLImageElement>()
+  async componentDidMount() {
     // this.trainIris()
-    
   }
-
 
   tensor() {
     //一个2层张量，第一层三个值，第二层两个值

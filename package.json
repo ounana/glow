@@ -18,6 +18,7 @@
     "@types/react-router-dom": "^5.1.7",
     "antd": "^4.10.3",
     "marked": "^2.0.0",
+    "osov": "^1.0.5",
     "paper": "^0.12.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
