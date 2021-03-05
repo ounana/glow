@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/draftplan/index.css"],"names":[],"mappings":"AAAA,IACE,YACF,CAEA,QACE,cACF,CAEA,gBACE,gBAAiB,CACjB,WACF","file":"19.0fcab909.chunk.css","sourcesContent":[".dp {\n  padding: 50px;\n}\n\n.dp img {\n  max-width: 100%;\n}\n\n.dp table td,th {\n  border: 1px solid;\n  padding: 3px;\n}"]}
