@@ -1,30 +1,42 @@
-import { createRef, PureComponent } from "react";
+import { PureComponent } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { data } from './data'
-
-/**
- * Tensor -> 张量
- * 
- * tf.tensor<R extends Rank>(
- * values: TensorLike, shape?: ShapeMap[R], dtype?: DataType
- * ): Tensor<R>
- * 
- * values 值
- * shape  形状
- * dtype  类型
- * 
- * 1d = [1,2,3]            shape [3]
- * 2d = [[1],[2],[3]]      shape [3, 1]
- * 3d = [[[1,2]],[[3,4]]]  shape [2, 1, 2]
- * 4d = [[[[1]]],[[[2]]]]  shpe  [2, 1, 1, 1]
- */
+import { Model, Matrix } from './infer'
 
 export default class TestTensor extends PureComponent {
-  testimgRef = createRef<HTMLImageElement>()
-  async componentDidMount() {
-    // this.trainIris()
+  componentDidMount() {
+    console.clear()
+    let a = new Matrix([[1, 5, 0], [2, 4, -1], [0, -2, 0]])
+    let b = new Matrix([
+      [3, -7, 8, 9, -6],
+      [0, 2, -5, 7, 3],
+      [0, 0, 1, 5, 0],
+      [0, 0, 2, 4, -1],
+      [0, 0, 0, -2, 0]
+    ])
+    a.print()
+    b.print()
+    console.log(b.det())
   }
-
+  testInfer() {
+    //data
+    const xs = new Matrix([[1], [2], [3], [4]])
+    const ys = new Matrix([[1], [3], [5], [7]])
+    xs.print()
+    ys.print()
+    //create
+    const model = new Model(xs, ys)
+    model.setRate(0.001)
+    // fit
+    model.fit(10000, (batch) => {
+      if (batch % 500 === 0) {
+        console.log(batch, model.cost())
+      }
+    })
+    //predict
+    const xs2 = new Matrix([[5]])
+    model.predict(xs2).print()
+  }
   tensor() {
     //一个2层张量，第一层三个值，第二层两个值
     const a = tf.tensor([1, 2, 3, 4, 5, 6], [3, 2])
@@ -122,8 +134,25 @@ export default class TestTensor extends PureComponent {
   render() {
     return (
       <div>
-        <h1>Tensor 张量</h1>
+        <h1>Tensor</h1>
       </div>
     )
   }
 }
+
+/**
+ * Tensor -> 张量
+ *
+ * tf.tensor<R extends Rank>(
+ * values: TensorLike, shape?: ShapeMap[R], dtype?: DataType
+ * ): Tensor<R>
+ *
+ * values 值
+ * shape  形状
+ * dtype  类型
+ *
+ * 1d = [1,2,3]            shape [3]
+ * 2d = [[1],[2],[3]]      shape [3, 1]
+ * 3d = [[[1,2]],[[3,4]]]  shape [2, 1, 2]
+ * 4d = [[[[1]]],[[[2]]]]  shpe  [2, 1, 1, 1]
+ */
