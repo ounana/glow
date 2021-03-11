@@ -10,11 +10,18 @@ export class Matrix {
     this.shape[1] = data[0].length
     this.self = data
   }
-  //根据索引获取每一行
+  /**
+   * 根据索引获取每一行
+   * @param i 
+   * @returns 
+   */
   get(i: number) {
     return this.self[i]
   }
-  //计算行列式
+  /**
+   * 行列式
+   * @returns 
+   */
   det() {
     if (this.shape[0] !== this.shape[1]) {
       throw new Error('只有方阵才能计算行列式')
@@ -33,7 +40,12 @@ export class Matrix {
     }
   }
 
-  //求余子式
+  /**
+   * 余子式
+   * @param rowi 行
+   * @param coli 列
+   * @returns 
+   */
   cominor(rowi: number, coli: number) {
     if (this.shape[0] < 2 || this.shape[1] < 2) {
       throw new Error('求余子式行和列必须大于2才有意义')
@@ -63,12 +75,27 @@ export class Matrix {
     }
     return new Matrix(n)
   }
+  /**
+   * 减法
+   * @param b 
+   * @returns 
+   */
   subtraction(b: Matrix) {
     return this.coLocationOperation(b, 'sub')
   }
+  /**
+   * 加法
+   * @param b 
+   * @returns 
+   */
   addition(b: Matrix) {
     return this.coLocationOperation(b, 'add')
   }
+  /**
+   * 数乘
+   * @param b 
+   * @returns 
+   */
   numberMultiply(b: number) {
     let n = []
     for (let i = 0; i < this.shape[0]; i++) {
@@ -102,7 +129,8 @@ export class Matrix {
   }
   scale() { }
   /**
-   * 矩阵转置
+   * 转置
+   * @returns 
    */
   transposition() {
     let a = []
@@ -115,9 +143,11 @@ export class Matrix {
     }
     return new Matrix(a)
   }
+
   /**
-   * 矩阵归一化  
+   * 归一化  
    * `X = X - average / range`
+   * @returns 
    */
   normalization() {
     let t = this.transposition()
@@ -130,6 +160,9 @@ export class Matrix {
     }
     return t.transposition()
   }
+  /**
+   * 打印
+   */
   print() {
     console.log(`Matrix ${this.shape[0]}x${this.shape[1]} [`)
     for (let i = 0; i < this.shape[0]; i++) {
