@@ -1,11 +1,14 @@
 import { PureComponent } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { data } from './data'
-import { Model, Matrix } from './infer'
+import { Model, Matrix } from 'infers'
 
 export default class TestTensor extends PureComponent {
   componentDidMount() {
     console.clear()
+    this.testMatrix()
+  }
+  testMatrix() {
     let a = new Matrix([[1, 5, 0], [2, 4, -1], [0, -2, 0]])
     let b = new Matrix([
       [3, -7, 8, 9, -6],

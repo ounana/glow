@@ -67,6 +67,13 @@
   2. 将404.html添加到build文件夹中
 
 
-  
+
+  发布包：
+  先切换到官方源
+  再使用 npm login登陆
+  执行 npm publish 检查版本号是否更新 否则发布不成功
+
+  删除发布的包
+  npm unpublish 包名 --force
 
 ```
