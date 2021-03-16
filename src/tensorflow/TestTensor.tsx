@@ -1,44 +1,10 @@
 import { PureComponent } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { data } from './data'
-import { Model, Matrix } from 'infers'
 
 export default class TestTensor extends PureComponent {
   componentDidMount() {
     console.clear()
-    this.testMatrix()
-  }
-  testMatrix() {
-    let a = new Matrix([[1, 5, 0], [2, 4, -1], [0, -2, 0]])
-    let b = new Matrix([
-      [3, -7, 8, 9, -6],
-      [0, 2, -5, 7, 3],
-      [0, 0, 1, 5, 0],
-      [0, 0, 2, 4, -1],
-      [0, 0, 0, -2, 0]
-    ])
-    a.print()
-    b.print()
-    console.log(b.det())
-  }
-  testInfer() {
-    //data
-    const xs = new Matrix([[1], [2], [3], [4]])
-    const ys = new Matrix([[1], [3], [5], [7]])
-    xs.print()
-    ys.print()
-    //create
-    const model = new Model(xs, ys)
-    model.setRate(0.001)
-    // fit
-    model.fit(10000, (batch) => {
-      if (batch % 500 === 0) {
-        console.log(batch, model.cost())
-      }
-    })
-    //predict
-    const xs2 = new Matrix([[5]])
-    model.predict(xs2).print()
   }
   tensor() {
     //一个2层张量，第一层三个值，第二层两个值
