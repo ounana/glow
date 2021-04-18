@@ -10,7 +10,7 @@ const DraftPlan = lazy(() => import('./draftplan/DraftPlan'))
 const Tensorflow = lazy(() => import('./tensorflow'))
 const Test = lazy(() => import('./test/Test'))
 const Reduxd = lazy(() => import('./reduxd'))
-const Paperd = lazy(() => import('./paperd'))
+const Plane = lazy(() => import('./plane'))
 const Rxjsd = lazy(() => import('./rxjsd'))
 const Game = lazy(() => import('./game'))
 const DuckShooter = lazy(() => import('./duckshooter'))
@@ -25,12 +25,12 @@ export default function Router() {
           <Route path={"/tensorflow"} component={Tensorflow} />
           <Route path="/test" component={Test} />
           <Route path="/reduxd" component={Reduxd} />
-          <Route path="/paperd" component={Paperd} />
+          <Route path="/plane" component={Plane} />
           <Route path="/rxjsd" component={Rxjsd} />
           <Route path="/game" component={Game} />
           <Route path="/duckshooter" component={DuckShooter} />
           <Route path="/g6" component={G6Graphic} />
-          
+
           <Redirect from="*" to="/tensorflow"></Redirect>
         </Switch>
       </Suspense>

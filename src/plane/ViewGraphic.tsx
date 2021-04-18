@@ -1,13 +1,16 @@
 import { createRef, PureComponent } from 'react'
-import { Row, Col, Radio } from 'antd'
 import * as paper from 'paper'
-import Panel from './Panel';
 import { ServiceCore } from './services';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
+import Left from './Left';
+import Right from './Right';
 
-export default class PaperGraphic extends PureComponent {
+interface ViewGraphicProps {
+  height?: number | string
+}
+export default class ViewGraphic extends PureComponent<ViewGraphicProps> {
   paperdom = createRef<HTMLDivElement>()
   paper: paper.PaperScope
   serviceCore: ServiceCore
@@ -49,17 +52,16 @@ export default class PaperGraphic extends PureComponent {
   }
 
   render() {
+    const { height } = this.props
     return (
-      <div>
-        <Row>
-          <Col
-            span={18}
-            style={{ border: '1px solid', height: 500 }}
-            ref={this.paperdom}
-          />
-          <Col span={6}><Panel /></Col>
-        </Row>
-        <Radio.Group
+      <div className="ViewGraphic" style={{ height }}>
+        <Left width={200} />
+        <div
+          style={{ width: 'calc(100% - 400px)', border: '1px solid', background: '#ccc'}}
+          ref={this.paperdom}
+        />
+        <Right width={200} />
+        {/* <Radio.Group
           defaultValue="draw"
           buttonStyle="solid"
           onChange={this.onRadioChange}
@@ -70,7 +72,7 @@ export default class PaperGraphic extends PureComponent {
           <Radio.Button value="union">联合</Radio.Button>
           <Radio.Button value="hide">隐藏</Radio.Button>
           <Radio.Button value="show">显示</Radio.Button>
-        </Radio.Group>
+        </Radio.Group> */}
       </div>
     )
   }
