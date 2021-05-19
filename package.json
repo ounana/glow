@@ -2,7 +2,7 @@
   "name": "glow",
   "version": "0.1.1",
   "private": true,
-  "homepage": "https://ounana.github.io/glow",
+  "homepage": "https://ounana.github.io",
   "dependencies": {
     "@antv/g2": "^4.1.7",
     "@antv/g6": "^4.1.16",
