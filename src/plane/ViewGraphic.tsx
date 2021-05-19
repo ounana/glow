@@ -4,8 +4,8 @@ import { ServiceCore } from './services';
 import { RadioChangeEvent } from 'antd/lib/radio';
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
-// import Left from './Left';
-// import Right from './Right';
+import Left from './Left';
+import Right from './Right';
 
 interface ViewGraphicProps {
   height?: number | string
@@ -55,12 +55,12 @@ export default class ViewGraphic extends PureComponent<ViewGraphicProps> {
     const { height } = this.props
     return (
       <div className="ViewGraphic" style={{ height }}>
-        {/* <Left width={200} /> */}
+        <Left width={200} />
         <div
           style={{ width: 'calc(100% - 400px)', border: '1px solid', background: '#ccc'}}
           ref={this.paperdom}
         />
-        {/* <Right width={200} /> */}
+        <Right width={200} />
         {/* <Radio.Group
           defaultValue="draw"
           buttonStyle="solid"
