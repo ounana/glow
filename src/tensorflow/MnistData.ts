@@ -16,7 +16,7 @@ export const IMAGE_SIZE = IMAGE_H * IMAGE_W
  */
 
 const NUM_DATASET_ELEMENTS = 65000
-const MNIST_IMAGES_SPRITE_PATH = './glow/mnist_images.png'
+const MNIST_IMAGES_SPRITE_PATH = './mnist_images.png'
 
 /**
  * 图片label数据
@@ -29,7 +29,7 @@ const MNIST_IMAGES_SPRITE_PATH = './glow/mnist_images.png'
  * 0100000001 => 9
  */
 export const NUM_CLASSES = 10
-const MNIST_LABELS_PATH = './glow/mnist_labels_uint8'
+const MNIST_LABELS_PATH = './mnist_labels_uint8'
 
 /**
  * 取前五万张
