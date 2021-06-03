@@ -1,40 +1,49 @@
-import store from '.'
-import { Action, ACTION } from './actions'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AppDispatch } from '.'
 
-export type Music = {
-  pending: boolean
+export interface Music {
   data: string[]
+  pending: boolean
 }
 
-const initMusic: Music = { pending: false, data: [] }
-export function music(state = initMusic, action: Action): Music {
-  switch (action.type) {
-    case ACTION.FETCH_DATA_SUCCESS:
-      return { ...state, pending: false, data: action.payload }
-    case ACTION.FETCH_DATA_FAIL:
-      return { ...state, pending: false }
-    case ACTION.FETCH_DATA:
-      loadData(action.payload)
-      return { ...state, pending: true }
-    default:
-      return state
-  }
+const initialState: Music = {
+  pending: false,
+  data: []
 }
+
+export const musicSlice = createSlice({
+  name: 'music',
+  initialState,
+  reducers: {
+    fetchSuccess: (state, action: PayloadAction<string[]>) => {
+      state.data = action.payload
+      state.pending = false
+    },
+    fetchFail: (state) => {
+      state.pending = false
+    },
+    fetchStart: (state) => {
+      state.pending = true
+    }
+  }
+})
+
+export const { fetchSuccess, fetchFail, fetchStart } = musicSlice.actions
+
+export default musicSlice.reducer
 
 export function loadData(params: string) {
-  /* Simulate an asynchronous wait */
-  setTimeout(async () => {
-    try {
-      const response = await fetch(
-        process.env.REACT_APP_BASE_URL + '/data.json'
-      ).then(res => res.json())
-      store.dispatch({
-        type: ACTION.FETCH_DATA_SUCCESS,
-        payload: response[params]
-      })
-    } catch (err) {
-      console.log(err)
-      store.dispatch({ type: ACTION.FETCH_DATA_FAIL })
-    }
-  }, 1000)
+  return async function (dispatch: AppDispatch) {
+    dispatch(fetchStart())
+    setTimeout(async () => {
+      try {
+        let res = await fetch('./data.json').then(res => res.json())
+        let res2 = res[params] as string[]
+        dispatch(fetchSuccess(res2))
+      } catch (err) {
+        console.log(err)
+        dispatch(fetchFail())
+      }
+    }, 1000)
+  }
 }

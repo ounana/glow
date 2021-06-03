@@ -1,28 +1,29 @@
 import { Input, List, Radio } from 'antd'
-import { connect, DispatchProp } from 'react-redux'
-import { State } from '../store';
-import { Action, ACTION } from '../store/actions';
 import { RadioChangeEvent } from 'antd/lib/radio';
-import { TodoFilter } from '../store/todo';
+import { TodoFilter, addTodo, toggleTodo, switchTodoFilter } from '../store/todo';
+import { useAppDispatch, useAppSelector } from '../store'
 
 let todoId = 0
-interface TodoProps extends ReturnType<typeof mapstate>, DispatchProp<Action> { }
 
-function Todo(props: TodoProps) {
-  const { todo: { data, filter }, dispatch } = props
+export default function Todo() {
+  const { data, filter } = useAppSelector((state) => state.todo)
+  const dispatch = useAppDispatch()
+
   const onSearch = (v: string) => {
     if (!v.trim()) return
     const todo = { id: todoId++, text: v, completed: false }
-    dispatch({ type: ACTION.ADD_TODO, payload: todo })
+    dispatch(addTodo(todo))
   }
+
   const onTodoClick = (id: number) => {
-    dispatch({ type: ACTION.TOGGLE_TODO, payload: 2 })
-    dispatch({ type: ACTION.TOGGLE_TODO, payload: id })
+    dispatch(toggleTodo(id))
   }
+
   const onRadioChange = (e: RadioChangeEvent) => {
-    const filter = e.target.value
-    dispatch({ type: ACTION.SWITCH_TODO_FILTER, payload: filter })
+    const filter = e.target.value as TodoFilter
+    dispatch(switchTodoFilter(filter))
   }
+
   const filterTodo = (filter: TodoFilter) => {
     switch (filter) {
       case 'SHOW_COMPLETED':
@@ -63,9 +64,3 @@ function Todo(props: TodoProps) {
     </div>
   )
 }
-
-const mapstate = (state: State) => ({
-  todo: state.todo
-})
-
-export default connect(mapstate)(Todo)

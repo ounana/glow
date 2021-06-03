@@ -1,14 +1,12 @@
 import { Button, List } from 'antd'
-import { connect, DispatchProp } from 'react-redux'
-import { State } from '../store'
-import { ACTION, Action } from '../store/actions'
+import { useAppDispatch, useAppSelector } from '../store'
+import { loadData } from '../store/music'
 
-interface LoadDataProps extends ReturnType<typeof mapstate>, DispatchProp<Action> { }
-
-function LoadData(props: LoadDataProps) {
-  const { music: { data, pending }, dispatch } = props
+export default function LoadData() {
+  const { data, pending } = useAppSelector((state) => state.music)
+  const dispatch = useAppDispatch()
   const onLoadClick = () => {
-    dispatch({ type: ACTION.FETCH_DATA, payload: 'music' })
+    dispatch(loadData('music'))
   }
   return (
     <div>
@@ -27,9 +25,3 @@ function LoadData(props: LoadDataProps) {
     </div>
   )
 }
-
-const mapstate = (state: State) => ({
-  music: state.music
-})
-
-export default connect(mapstate)(LoadData)

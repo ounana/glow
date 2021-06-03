@@ -9,10 +9,3 @@ declare interface Window {
 declare module '*.ogg' {
   export default any
 }
-
-declare module 'highlight.js/lib/highlight' {
-  function registerLanguage(lang: string, mol: module)
-  function highlightBlock(el: HTMLElement)
-}
-
-declare module 'highlight.js/lib/languages/typescript'

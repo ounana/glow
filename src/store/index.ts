@@ -1,21 +1,17 @@
-import { combineReducers } from 'redux'
-import { createStore } from 'redux'
-import { todo, Todo } from './todo'
-import { Music, music } from './music'
-import { Action } from './actions'
-import { PaperStore, paperStore } from './paperStore'
+import todo from './todo'
+import music from './music'
 
-const rootState = combineReducers<State, Action>({
-  todo,
-  music,
-  paperStore
+import { configureStore } from '@reduxjs/toolkit'
+import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux'
+
+export const store = configureStore({
+  reducer: {
+    todo, music
+  }
 })
 
-export type State = {
-  todo: Todo,
-  music: Music,
-  paperStore: PaperStore
-}
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
 
-const store = createStore(rootState)
-export default store
+export const useAppDispatch = () => useDispatch<AppDispatch>()
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector
