@@ -1,79 +1,76 @@
 import { createRef, PureComponent } from 'react'
 import * as paper from 'paper'
 import { ServiceCore } from './services';
-import { RadioChangeEvent } from 'antd/lib/radio';
 import { fromEvent, Subscription } from 'rxjs';
 import { debounceTime, map } from 'rxjs/operators';
 import Left from './Left';
 import Right from './Right';
+import { connect } from 'react-redux'
+import { RootState } from '../store';
 
 interface ViewGraphicProps {
-  height?: number | string
+  height: number | string
+  plane?: RootState['plane']
 }
-export default class ViewGraphic extends PureComponent<ViewGraphicProps> {
-  paperdom = createRef<HTMLDivElement>()
+
+class ViewGraphic extends PureComponent<ViewGraphicProps> {
+  ref = createRef<HTMLDivElement>()
   paper: paper.PaperScope
   serviceCore: ServiceCore
-  rePaperSub: Subscription | null = null
-  constructor(props: {}) {
+  resizePaperSub: Subscription | null = null
+
+  constructor(props: ViewGraphicProps) {
     super(props)
     this.paper = new paper.PaperScope()
     this.serviceCore = new ServiceCore(this.paper)
   }
 
   componentWillUnmount() {
-    this.rePaperSub?.unsubscribe()
+    this.resizePaperSub?.unsubscribe()
   }
+
   componentDidMount() {
-    const paperdom = this.paperdom.current
-    if (!paperdom) return
+    const ref = this.ref.current
+    if (!ref) return
     const canvas = document.createElement('canvas')
-    paperdom.appendChild(canvas)
+    ref.appendChild(canvas)
 
     this.paper.setup(canvas)
     this.serviceCore.registerService('draw')
 
-    const size = paperdom.getBoundingClientRect()
+    const size = ref.getBoundingClientRect()
     this.paper.view.viewSize = new this.paper.Size(
       size.width, size.height
     )
     const observable = fromEvent(window, 'resize').pipe(
       debounceTime(300),
-      map(e => paperdom.getBoundingClientRect())
+      map(() => ref.getBoundingClientRect())
     )
-    this.rePaperSub = observable.subscribe(e => {
+    this.resizePaperSub = observable.subscribe(e => {
       this.paper.view.viewSize = new this.paper.Size(e.width, e.height)
     })
   }
 
-  onRadioChange = (e: RadioChangeEvent) => {
+  componentDidUpdate() {
     if (!this.serviceCore) return
-    this.serviceCore.registerService(e.target.value)
+    this.serviceCore.registerService(this.props.plane?.editorType!)
   }
 
   render() {
     const { height } = this.props
     return (
-      <div className="ViewGraphic" style={{ height }}>
+      <div style={{ height, display: 'flex' }}>
         <Left width={200} />
         <div
-          style={{ width: 'calc(100% - 400px)', border: '1px solid', background: '#ccc'}}
-          ref={this.paperdom}
+          style={{ width: 'calc(100% - 400px)', border: '1px solid' }}
+          ref={this.ref}
         />
         <Right width={200} />
-        {/* <Radio.Group
-          defaultValue="draw"
-          buttonStyle="solid"
-          onChange={this.onRadioChange}
-        >
-          <Radio.Button value="draw">勾画</Radio.Button>
-          <Radio.Button value="move">移动</Radio.Button>
-          <Radio.Button value="daub">涂抹</Radio.Button>
-          <Radio.Button value="union">联合</Radio.Button>
-          <Radio.Button value="hide">隐藏</Radio.Button>
-          <Radio.Button value="show">显示</Radio.Button>
-        </Radio.Group> */}
       </div>
     )
   }
 }
+
+const mapstate = (state: RootState) => ({ plane: state.plane })
+
+export default connect(mapstate)(ViewGraphic)

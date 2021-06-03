@@ -13,8 +13,26 @@ const menuList = [
 export default function TopMenu(props: TopMenuProps) {
   const { height } = props
   return (
-    <div className="TopMenu" style={{ height }}>
-      { menuList.map(v => <div key={v.value}>{v.label}</div>)}
+    <div style={{ height, display: 'flex', alignItems: 'center' }}>
+      { menuList.map(v => <Button style={{
+        marginLeft: 10
+      }} key={v.value}>{v.label}</Button>)}
     </div>
+  )
+}
+
+type ButtonProps = React.PropsWithChildren<{
+  style?: React.CSSProperties
+  onClick?: () => void
+}>
+
+function Button(props: ButtonProps) {
+  const { children, style, onClick } = props
+  return (
+    <div style={{
+      display: 'inline-block',
+      cursor: 'pointer',
+      ...style
+    }} onClick={onClick}>{children}</div>
   )
 }

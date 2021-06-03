@@ -12,8 +12,9 @@ const Redux = lazy(() => import('./redux'))
 const Rxjs = lazy(() => import('./rxjs'))
 const Game = lazy(() => import('./game'))
 const DuckShooter = lazy(() => import('./duckshooter'))
-const G6Graphic = lazy(() => import('./g6/G6Graphic'))
+const G6Graphic = lazy(() => import('./g6'))
 const Plane = lazy(() => import('./plane'))
+const IconView = lazy(() => import('./icon'))
 
 export default function Router() {
   return (
@@ -29,6 +30,7 @@ export default function Router() {
           <Route path="/duckshooter" component={DuckShooter} />
           <Route path="/g6" component={G6Graphic} />
           <Route path="/plane" component={Plane} />
+          <Route path="/icon" component={IconView} />
 
           <Redirect from="*" to="/"></Redirect>
         </Switch>

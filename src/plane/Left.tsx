@@ -4,6 +4,6 @@ interface LeftProps {
 export default function Left(props: LeftProps) {
   const { width } = props
   return (
-    <div style={{ width }}>Left</div>
+    <div style={{ width }}></div>
   )
 }

@@ -4,6 +4,6 @@ interface RightProps {
 export default function Right(props: RightProps) {
   const { width } = props
   return (
-    <div style={{ width }}>Right</div>
+    <div style={{ width }}></div>
   )
 }

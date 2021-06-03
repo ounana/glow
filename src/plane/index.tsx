@@ -5,7 +5,7 @@ import TopOper from "./TopOper"
 
 export default function Paperd() {
   return (
-    <div className="Plane">
+    <div className="plane">
       <TopMenu height={50} />
       <TopOper height={80} />
       <ViewGraphic height='calc(100% - 130px)' />

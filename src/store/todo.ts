@@ -13,10 +13,10 @@ export interface Todo {
   filter: TodoFilter
 }
 
-const initialState: Todo = {
+const initialState = {
   data: [],
   filter: 'SHOW_ALL'
-}
+} as Todo
 
 export const todoSlice = createSlice({
   name: 'todo',

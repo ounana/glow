@@ -31,7 +31,9 @@ export class ServiceCore {
     }
     //switch service
     const service = this.getService(name)
-    if (!service) throw new Error('This service not is exist!')
+    // if (!service) throw new Error('This service not is exist!')
+    if (!service) return
+
     this.service = new service(this.paper)
     this.serviceName = service.namespace
   }
