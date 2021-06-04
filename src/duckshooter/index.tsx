@@ -9,7 +9,7 @@ export default class DuckShooterGraph extends PureComponent {
     this.game = new DuckShooter(div)
   }
   componentWillUnmount() {
-    this.game!.close()
+    this.game?.close()
   }
   render() {
     return (

@@ -36,7 +36,7 @@ export default class ImageClassify extends PureComponent {
     await model.save('downloads://mobilenet')
   }
   async loadMobilenet() {
-    this.mobilenet = await tf.loadLayersModel('/glow/model/mobilenet.json')
+    this.mobilenet = await tf.loadLayersModel('/model/mobilenet.json')
     this.mobilenet.summary()
     //预热模型，让第一个预测更快。
     const prediction = this.mobilenet.predict(tf.zeros([1, 224, 224, 3])) as tf.Tensor

@@ -203,23 +203,27 @@ export class DuckShooter {
     window.addEventListener('keyup', this.onKeyUp)
     this.setup()
   }
-  createCanvas(): { canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D } {
+
+  createCanvas() {
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')!
     canvas.style.border = '1px solid'
     return { canvas, ctx }
   }
-  getCanvasSize(): { width: number, height: number } {
+
+  getCanvasSize() {
     const rootRect = this.root.getBoundingClientRect()
     this.canvas.height = rootRect.height
     let width = rootRect.height * 1.3
     width = width > rootRect.width ? rootRect.width : width
     return { width, height: rootRect.height }
   }
+
   close() {
     window.removeEventListener('keydown', this.onKeyDown)
     window.removeEventListener('keyup', this.onKeyUp)
   }
+
   keyDownHandle(evt: KeyboardEvent) {
     switch (evt.code) {
       case 'Space':
@@ -236,12 +240,14 @@ export class DuckShooter {
       default:
     }
   }
+
   switchSuspend() {
     this.suspend = !this.suspend
     if (!this.suspend) {
       requestAnimationFrame(this.render)
     }
   }
+
   generateDuck() {
     //一次创建 1 ～ 2 只鸭子
     const duckCount = ~~(Math.random() * 2) + 1
@@ -250,29 +256,34 @@ export class DuckShooter {
       this.ducks.push(duck)
     }
   }
+
   onKeyDown = (evt: KeyboardEvent) => {
     this.keydowns[evt.key] = true
     this.keyDownHandle(evt)
   }
+
   onKeyUp = (evt: KeyboardEvent) => {
     this.keydowns[evt.key] = false
   }
+
   async setup() {
     //加载图片数据
     this.images = await loadImages()
     this.render()
   }
+
   render = () => {
     this.update()
     this.clearCanvas()
     this.draw()
     if (!this.suspend) requestAnimationFrame(this.render)
   }
+
   draw() {
-    this.drawScene()
     this.drawGunLens()
     this.drawDuck()
   }
+
   drawDuck() {
     this.ducks.forEach(duck => {
       let key = 'DUCK_' + duck.type
@@ -288,6 +299,7 @@ export class DuckShooter {
       this.ctx.restore()
     })
   }
+
   update() {
     //更新按键操作
     this.checkKeydowns()
@@ -300,6 +312,7 @@ export class DuckShooter {
     //删除无效的鸭子
     this.ducks = this.ducks.filter(d => !d.invalid)
   }
+
   checkKeydowns() {
     Object.keys(this.keydowns).forEach(key => {
       if (!this.keydowns[key]) return
@@ -316,30 +329,11 @@ export class DuckShooter {
       }
     })
   }
+
   clearCanvas() {
     this.ctx.clearRect(0, 0, this.width, this.height)
   }
-  //计算缩放比例
-  getScale() {
-    const { BG } = this.images
-    const { naturalWidth, naturalHeight } = BG
-    return { scaleX: this.width / naturalWidth, scaleY: this.height / naturalHeight }
-  }
-  drawScene = () => {
-    const { BG, GRASS, TREE } = this.images
-    const { scaleX, scaleY } = this.getScale()
-    const [treeWidth, treeHeight] = [
-      TREE.naturalWidth * scaleX, TREE.naturalHeight * scaleY
-    ]
-    const [grassWidth, grassHeight] = [
-      this.width, (this.width / GRASS.naturalWidth) * GRASS.naturalHeight
-    ]
-    const [grassX, grassY] = [0, this.height - grassHeight]
-    const [treeX, treeY] = [0, this.height - treeHeight - grassHeight / 2]
-    this.ctx.drawImage(BG, 0, 0, this.width, this.height)
-    this.ctx.drawImage(TREE, treeX, treeY, treeWidth, treeHeight)
-    this.ctx.drawImage(GRASS, grassX, grassY, grassWidth, grassHeight)
-  }
+
   drawGunLens() {
     const { GUN_LENS, BLAST } = this.images
     this.ctx.drawImage(GUN_LENS, this.gunLens.x, this.gunLens.y, this.gunLens.width, this.gunLens.height)

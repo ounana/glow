@@ -1,6 +1,3 @@
-import bg from './images/bg.jpg'
-import grass from './images/grass.png'
-import tree from './images/tree.png'
 import gun_lens from './images/gun_lens.png'
 import blast from './images/blast.png'
 import duck_1 from './images/duck_1.png'
@@ -17,9 +14,6 @@ export interface Images {
 
 export async function loadImages() {
   const [
-    BG,
-    GRASS,
-    TREE,
     GUN_LENS,
     BLAST,
     DUCK_1,
@@ -27,9 +21,6 @@ export async function loadImages() {
     DUCK_3,
     DUCK_4,
   ] = await Promise.all([
-    loadImage(bg),
-    loadImage(grass),
-    loadImage(tree),
     loadImage(gun_lens),
     loadImage(blast),
     loadImage(duck_1),
@@ -38,9 +29,6 @@ export async function loadImages() {
     loadImage(duck_4),
   ])
   return {
-    BG,
-    GRASS,
-    TREE,
     GUN_LENS,
     BLAST,
     DUCK_1,
